@@ -1,0 +1,8 @@
+{
+    "name": "graphene.vrutils",
+    "displayName": "VR Utils",
+    "version": "0.0.0",
+    "unity": "2018.2",
+    "description": ". . .",
+    "dependencies": { }
+}
