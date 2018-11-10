@@ -1,7 +1,8 @@
 {
     "name": "Graphene.VRUtils",
     "references": [
-        "Graphene.InputManager"
+        "Graphene.InputManager",
+        "Graphene.UiGenerics"
     ],
     "optionalUnityReferences": [],
     "includePlatforms": [],
