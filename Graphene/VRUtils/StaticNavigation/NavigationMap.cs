@@ -31,7 +31,7 @@ namespace Graphene.VRUtils.StaticNavigation
             {
                 _canvas.transform.GetChild(i).gameObject.SetActive(i == id);
             }
-            _sphereTextureManager.ChangeTexture();
+            _sphereTextureManager.ChangeTexture(id);
         }
     }
 }

@@ -2,6 +2,7 @@
 using Graphene.VRUtils.Presentation;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Graphene.VRUtils.StaticNavigation
 {
@@ -99,6 +100,7 @@ namespace Graphene.VRUtils.StaticNavigation
                 }
             }
             
+            UpdateRoomPoints();
             _self.MoveToRoom(i);
         }
 
@@ -186,7 +188,8 @@ namespace Graphene.VRUtils.StaticNavigation
                 RoomInteractionButton bt;
                 if (j >= room.childCount)
                 {
-                    bt = Instantiate(_navButtonAsset, room);
+                    bt = PrefabUtility.InstantiatePrefab(_navButtonAsset) as RoomInteractionButton;
+                    bt.transform.SetParent( room);
                     ch = bt.transform;
                 }
                 else
@@ -196,8 +199,6 @@ namespace Graphene.VRUtils.StaticNavigation
                 }
                 ch.name = "Connection (" + i + " -> " + j + ")";
 
-                ch.gameObject.SetActive(i!=j);
-                
                 var dir = _self.Rooms[j] - _self.Rooms[i];
 
                 ch.position = dir * _self.ButtonRadiusDistance;
@@ -205,6 +206,8 @@ namespace Graphene.VRUtils.StaticNavigation
 
                 bt.NavigationMap = _self;
                 bt.Id = j;
+                
+                ch.gameObject.SetActive(i!=j);
             }
         }
     }
