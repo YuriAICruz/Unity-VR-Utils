@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Graphene.VRUtils.Presentation;
 using UnityEditor;
+using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -174,6 +175,8 @@ namespace Graphene.VRUtils.StaticNavigation
 
         private void SetupRoomConnections(Transform room, int i)
         {
+            if(Application.isPlaying) return;
+            
             if (room.childCount >= _self.Rooms.Count)
             {
                 for (int j = 0; j < room.childCount; j++)
@@ -206,9 +209,12 @@ namespace Graphene.VRUtils.StaticNavigation
 
                 bt.NavigationMap = _self;
                 bt.Id = j;
+
+                EditorUtility.SetDirty(bt);
                 
                 ch.gameObject.SetActive(i!=j);
             }
+            EditorSceneManager.MarkSceneDirty(SceneManager.GetActiveScene());
         }
     }
 }
