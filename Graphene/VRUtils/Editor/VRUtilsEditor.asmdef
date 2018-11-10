@@ -1,7 +1,8 @@
 {
     "name": "Graphene.VRUtilsEditor",
     "references": [
-        "Graphene.VRUtils"
+        "Graphene.VRUtils",
+        "Graphene.UiGenerics"
     ],
     "optionalUnityReferences": [],
     "includePlatforms": [
