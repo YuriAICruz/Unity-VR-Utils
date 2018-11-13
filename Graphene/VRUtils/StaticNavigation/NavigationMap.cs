@@ -6,7 +6,7 @@ namespace Graphene.VRUtils.StaticNavigation
     [RequireComponent(typeof(SphereTextureManager))]
     public class NavigationMap : MonoBehaviour
     {
-        private SphereTextureManager _sphereTextureManager;
+        private BaseNavigation[] _sphereTextureManager;
 
         [HideInInspector] public List<Vector3> Rooms;
 
@@ -15,9 +15,27 @@ namespace Graphene.VRUtils.StaticNavigation
 
         private void Awake()
         {
-            _sphereTextureManager = GetComponent<SphereTextureManager>();
+            SetupTextureManagers();
 
             _canvas = GameObject.Find("3DCanvas");
+        }
+
+        private void SetupTextureManagers()
+        {
+            _sphereTextureManager = FindObjectsOfType<BaseNavigation>();
+
+            var sm = GetComponent<BaseNavigation>();
+
+            foreach (var textureManager in _sphereTextureManager)
+            {
+                textureManager.Textures = sm.Textures;
+                textureManager.TransitionTime = sm.TransitionTime;
+            }
+        }
+
+        private void Start()
+        {
+            MoveToRoom(0);
         }
 
         public void MoveToRoom(int id)
@@ -25,13 +43,16 @@ namespace Graphene.VRUtils.StaticNavigation
             if (_canvas == null)
                 _canvas = GameObject.Find("3DCanvas");
             if (_sphereTextureManager == null)
-                _sphereTextureManager = GetComponent<SphereTextureManager>();
+                SetupTextureManagers();
 
             for (int i = 0; i < Rooms.Count; i++)
             {
                 _canvas.transform.GetChild(i).gameObject.SetActive(i == id);
             }
-            _sphereTextureManager.ChangeTexture(id);
+            foreach (var textureManager in _sphereTextureManager)
+            {
+                textureManager.ChangeTexture(id);
+            }
         }
     }
 }
