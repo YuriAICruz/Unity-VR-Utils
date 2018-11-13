@@ -14,6 +14,7 @@ namespace Graphene.VRUtils.StaticNavigation
 
         void Awake()
         {
+            GetMaterial();
             _currentTexture = 0;
         }
 

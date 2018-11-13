@@ -55,6 +55,7 @@ namespace Graphene.VRUtils.StaticNavigation
 
         protected virtual void SetSecodaryTexture()
         {
+            if (Textures[_currentTexture] == null) return;
             _material.SetTexture("_Texture2", Textures[_currentTexture]);
         }
 
@@ -66,6 +67,7 @@ namespace Graphene.VRUtils.StaticNavigation
         protected virtual void SetMainTexture()
         {
             _material.SetFloat("_Blend", 0);
+            if (Textures[_currentTexture] == null) return;
             _material.mainTexture = Textures[_currentTexture];
         }
 
