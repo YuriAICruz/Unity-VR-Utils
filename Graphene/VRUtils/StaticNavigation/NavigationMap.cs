@@ -1,23 +1,42 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Graphene.VRUtils.StaticNavigation
 {
-    [RequireComponent(typeof(SphereTextureManager))]
+    [Serializable]
+    public class ListInt
+    {
+        public ListInt()
+        {
+            pointer = new List<int>();
+        }
+
+        public List<int> pointer;
+    }
+
     public class NavigationMap : MonoBehaviour
     {
         private BaseNavigation[] _sphereTextureManager;
 
         [HideInInspector] public List<Vector3> Rooms;
+        [HideInInspector] public List<float> RoomViewRadius;
+        [HideInInspector] public List<Vector3> RoomRotationOffset;
+
+        [HideInInspector] public List<ListInt> RoomHide;
 
         private GameObject _canvas;
         public float ButtonRadiusDistance = 10;
+
+        private Orbiter _orbiter;
 
         private void Awake()
         {
             SetupTextureManagers();
 
             _canvas = GameObject.Find("3DCanvas");
+
+            _orbiter = FindObjectOfType<Orbiter>();
         }
 
         private void SetupTextureManagers()
@@ -44,6 +63,11 @@ namespace Graphene.VRUtils.StaticNavigation
                 _canvas = GameObject.Find("3DCanvas");
             if (_sphereTextureManager == null)
                 SetupTextureManagers();
+            if (_orbiter == null)
+                _orbiter = FindObjectOfType<Orbiter>();
+
+            _orbiter.SetRotation(RoomRotationOffset[id]);
+
 
             for (int i = 0; i < Rooms.Count; i++)
             {

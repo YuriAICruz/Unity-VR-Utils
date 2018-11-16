@@ -49,8 +49,20 @@ namespace Graphene.VRUtils.StaticNavigation
                 yield return null;
                 t += Time.deltaTime;
             }
+            OnFullBlack();
+            while (t > 0)
+            {
+                SetUpdateBlend(t / TransitionTime);
+
+                yield return null;
+                t -= Time.deltaTime;
+            }
 
             SetMainTexture();
+        }
+
+        protected virtual void OnFullBlack()
+        {
         }
 
         protected virtual void SetSecodaryTexture()
@@ -68,7 +80,7 @@ namespace Graphene.VRUtils.StaticNavigation
         {
             _material.SetFloat("_Blend", 0);
             if (Textures[_currentTexture] == null) return;
-            _material.mainTexture = Textures[_currentTexture];
+                _material.mainTexture = Textures[_currentTexture];
         }
 
         protected virtual void GetMaterial()

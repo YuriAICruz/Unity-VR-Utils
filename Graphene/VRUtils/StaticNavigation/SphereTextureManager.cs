@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 namespace Graphene.VRUtils.StaticNavigation
@@ -22,7 +23,15 @@ namespace Graphene.VRUtils.StaticNavigation
         {
             base.GetMaterial();
             _renderer = GetComponent<Renderer>();
-            _material = _renderer.material;
+            #if UNITY_EDITOR
+            if (EditorApplication.isPlaying)
+            {
+                _material = _renderer.material;
+            }else{
+                _material = _renderer.sharedMaterial;}
+            #else
+                _material = _renderer.material;
+            #endif
         }
     }
 }
