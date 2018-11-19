@@ -97,6 +97,8 @@ namespace Graphene.VRUtils.StaticNavigation
                 {
                     Undo.RecordObject(target, "Mod Room NormalizeDistances");
                     _self.RoomCustomSettings[i].NormalizeDistances = nd;
+                    EditorUtility.SetDirty(_self);
+                    EditorSceneManager.MarkSceneDirty(SceneManager.GetActiveScene());
                     UpdateRoomPoints();
                 }
 
@@ -106,6 +108,8 @@ namespace Graphene.VRUtils.StaticNavigation
                 {
                     Undo.RecordObject(target, "Mod Room Name");
                     _self.RoomName[i] = str;
+                    EditorUtility.SetDirty(_self);
+                    EditorSceneManager.MarkSceneDirty(SceneManager.GetActiveScene());
                 }
 
                 EditorGUILayout.EndHorizontal();
@@ -127,6 +131,8 @@ namespace Graphene.VRUtils.StaticNavigation
                         Undo.RecordObject(target, "Mod Room Rotation");
 
                         _self.Rooms[i] = pos;
+                        EditorUtility.SetDirty(_self);
+                        EditorSceneManager.MarkSceneDirty(SceneManager.GetActiveScene());
 
                         UpdateRoomPoints();
                     }
@@ -141,6 +147,8 @@ namespace Graphene.VRUtils.StaticNavigation
                         Undo.RecordObject(target, "Mod Room Radius");
 
                         _self.RoomViewRadius[i] = radius;
+                        EditorUtility.SetDirty(_self);
+                        EditorSceneManager.MarkSceneDirty(SceneManager.GetActiveScene());
 
                         UpdateRoomPoints();
                     }
@@ -163,6 +171,8 @@ namespace Graphene.VRUtils.StaticNavigation
                         Undo.RecordObject(target, "Mod Room Rotation");
 
                         _self.RoomRotationOffset[i] = rotation;
+                        EditorUtility.SetDirty(_self);
+                        EditorSceneManager.MarkSceneDirty(SceneManager.GetActiveScene());
 
                         ViewGizmos(i);
                     }
@@ -240,6 +250,9 @@ namespace Graphene.VRUtils.StaticNavigation
                 {
                     Undo.RecordObject(target, "Mod Room IsPopupVideo");
                     _self.RoomCustomSettings[i].IsPopupVideo = pvd;
+                    
+                    EditorUtility.SetDirty(_self);
+                    EditorSceneManager.MarkSceneDirty(SceneManager.GetActiveScene());
                 }
                 EditorGUIUtility.labelWidth = tlw;
                 if (pvd)
