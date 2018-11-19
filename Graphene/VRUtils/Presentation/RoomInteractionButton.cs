@@ -19,6 +19,11 @@ namespace Graphene.VRUtils.Presentation
         public int Id;
         public string Name;
 
+        private void Awake()
+        {
+            SetName(Name);
+        }
+
         public void SetName(string name)
         {
             Name = name;

@@ -437,6 +437,7 @@ namespace Graphene.VRUtils.StaticNavigation
 
                 bt.NavigationMap = _self;
                 bt.Id = j;
+                bt.Name = _self.RoomName[j];
                 bt.SetName(_self.RoomName[j]);
                 
                 bt.IsPopupVideo = _self.RoomCustomSettings[j].IsPopupVideo;
