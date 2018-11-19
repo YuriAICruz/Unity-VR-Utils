@@ -3,6 +3,7 @@ using Graphene.UiGenerics;
 using Graphene.VRUtils.StaticNavigation;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Video;
 
 namespace Graphene.VRUtils.Presentation
 {
@@ -11,6 +12,9 @@ namespace Graphene.VRUtils.Presentation
         public event Action<int> OnClickId;
 
         public NavigationMap NavigationMap;
+        
+        public bool IsPopupVideo;
+        public VideoClip Clip;
         
         public int Id;
         public string Name;

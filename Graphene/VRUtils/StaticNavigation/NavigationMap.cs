@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Video;
 
 namespace Graphene.VRUtils.StaticNavigation
 {
@@ -15,6 +16,14 @@ namespace Graphene.VRUtils.StaticNavigation
         public List<int> pointer;
     }
 
+    [Serializable]
+    public class CustomSettings
+    {
+        public bool NormalizeDistances;
+        public bool IsPopupVideo;
+        public VideoClip Clip;
+    }
+
     public class NavigationMap : MonoBehaviour
     {
         private BaseNavigation[] _sphereTextureManager;
@@ -26,6 +35,8 @@ namespace Graphene.VRUtils.StaticNavigation
         [HideInInspector] public List<ListInt> RoomHide;
         
         [HideInInspector] public List<string> RoomName;
+        
+        [HideInInspector] public List<CustomSettings> RoomCustomSettings;
 
         private GameObject _canvas;
         public float ButtonRadiusDistance = 10;
