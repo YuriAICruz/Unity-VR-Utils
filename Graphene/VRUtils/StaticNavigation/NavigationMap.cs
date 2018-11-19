@@ -24,6 +24,8 @@ namespace Graphene.VRUtils.StaticNavigation
         [HideInInspector] public List<Vector3> RoomRotationOffset;
 
         [HideInInspector] public List<ListInt> RoomHide;
+        
+        [HideInInspector] public List<string> RoomName;
 
         private GameObject _canvas;
         public float ButtonRadiusDistance = 10;

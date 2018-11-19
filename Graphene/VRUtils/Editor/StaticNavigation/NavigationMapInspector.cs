@@ -35,6 +35,7 @@ namespace Graphene.VRUtils.StaticNavigation
             _navButtonAsset = Resources.Load<RoomInteractionButton>("UI/NavButton");
         }
 
+
         private void OnSceneGUI()
         {
             if (_viewMap)
@@ -85,6 +86,15 @@ namespace Graphene.VRUtils.StaticNavigation
 
             for (int i = 0; i < _self.Rooms.Count; i++)
             {
+                EditorGUI.BeginChangeCheck();
+                var str = EditorGUILayout.TextField(_self.RoomName[i]);
+                if (EditorGUI.EndChangeCheck())
+                {
+                    Undo.RecordObject(target, "Mod Room Name");
+                    _self.RoomName[i] = str;
+                    UpdateRoomPoints();
+                }
+                
                 EditorGUILayout.BeginHorizontal();
                 if (i == 0)
                 {
@@ -201,8 +211,8 @@ namespace Graphene.VRUtils.StaticNavigation
                             EditorGUILayout.EndHorizontal();
                         }
 
-                        EditorGUILayout.EndVertical();
                     }
+                    EditorGUILayout.EndVertical();
 
                     EditorGUILayout.Space();
                 }
@@ -220,6 +230,9 @@ namespace Graphene.VRUtils.StaticNavigation
 
             if (_self.RoomHide == null)
                 _self.RoomHide = new List<ListInt>();
+            
+            if (_self.RoomName == null)
+                _self.RoomName = new List<string>();
 
             for (var i = _self.RoomViewRadius.Count; i < _self.Rooms.Count; i++)
             {
@@ -234,6 +247,11 @@ namespace Graphene.VRUtils.StaticNavigation
             for (var i = _self.RoomHide.Count; i < _self.Rooms.Count; i++)
             {
                 _self.RoomHide.Add(new ListInt());
+            }
+
+            for (var i = _self.RoomName.Count; i < _self.Rooms.Count; i++)
+            {
+                _self.RoomName.Add("Hotspot");
             }
         }
 
@@ -349,6 +367,7 @@ namespace Graphene.VRUtils.StaticNavigation
                     ch = room.GetChild(j);
                     bt = ch.GetComponent<RoomInteractionButton>();
                 }
+                
                 ch.name = "Connection (" + i + " -> " + j + ")";
 
                 var dir = _self.Rooms[j] - _self.Rooms[i];
@@ -358,6 +377,7 @@ namespace Graphene.VRUtils.StaticNavigation
 
                 bt.NavigationMap = _self;
                 bt.Id = j;
+                bt.SetName(_self.RoomName[j]);
 
                 EditorUtility.SetDirty(bt);
 
