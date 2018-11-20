@@ -14,6 +14,9 @@ namespace Graphene.VRUtils.StaticNavigation
         private bool isVR;
         private Vector3 _lastTouch;
 
+        public NavigationMap navigationMap;
+        public int mainMenuId;
+
 #if UNITY_EDITOR
         public float _speed;
 #endif
@@ -37,6 +40,18 @@ namespace Graphene.VRUtils.StaticNavigation
             if (!isVR)
             {
                 TurnAround();
+            }
+
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                if (navigationMap.GetCurrentId() == mainMenuId)
+                {
+                    Application.Quit();
+                }
+                else
+                {
+                    navigationMap.MoveToRoom(mainMenuId);
+                }
             }
         }
 

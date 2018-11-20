@@ -11,6 +11,7 @@ namespace Graphene.VRUtils.StaticNavigation
 	{
 		public static bool STEREO_MODE = false;
 
+		private GameObject logoPanel;
 		private GameObject instructionsPanel;
 		private GameObject holder;
 
@@ -18,12 +19,24 @@ namespace Graphene.VRUtils.StaticNavigation
 		{
 			XRSettings.enabled = false;
 	
+			logoPanel = GameObject.Find("MainMenuCanvas/LogoPanel");
 			instructionsPanel = GameObject.Find("MainMenuCanvas/InstructionsPanel");
 			if (instructionsPanel)
 			{
 				instructionsPanel.SetActive(false);
 			}
 			holder = GameObject.Find("Holder");
+		}
+		
+		private IEnumerator Start()
+		{
+			yield return new WaitForSeconds(1.5f);
+
+			foreach (Graphic graphic in logoPanel.GetComponentsInChildren<Graphic>())
+			{
+				graphic.CrossFadeAlpha(0f, 0.5f, false);
+			}
+			logoPanel.GetComponent<Image>().CrossFadeAlpha(0f, 1f, false);
 		}
 
 		public string Scene = "Demo";
@@ -54,6 +67,7 @@ namespace Graphene.VRUtils.StaticNavigation
 				txt.text = help;
 			}
 
+			logoPanel.SetActive(false);
 			holder.SetActive(false);
 			instructionsPanel.SetActive(true);
 		}

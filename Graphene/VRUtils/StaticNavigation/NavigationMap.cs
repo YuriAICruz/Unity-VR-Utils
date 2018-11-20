@@ -53,6 +53,8 @@ namespace Graphene.VRUtils.StaticNavigation
 
         private Orbiter _orbiter;
 
+        private static int currentId;
+
         private void Awake()
         {
             SetupTextureManagers();
@@ -78,6 +80,7 @@ namespace Graphene.VRUtils.StaticNavigation
         private void Start()
         {
             MoveToRoom(0);
+            currentId = 0;
         }
 
         public void MoveToRoom(int id)
@@ -99,6 +102,13 @@ namespace Graphene.VRUtils.StaticNavigation
             {
                 textureManager.ChangeTexture(id);
             }
+
+            currentId = id;
+        }
+
+        public int GetCurrentId()
+        {
+            return currentId;
         }
     }
 }
