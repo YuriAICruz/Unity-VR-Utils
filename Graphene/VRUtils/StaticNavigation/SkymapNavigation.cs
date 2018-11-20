@@ -20,7 +20,8 @@ namespace Graphene.VRUtils.StaticNavigation
         {
             if (_orbiter == null)
                 _orbiter = FindObjectOfType<Orbiter>();
-         
+
+            _orbiter.Rotate();
             _material.SetFloat("_Rotation", _orbiter.GetYRotation() % 360);
 
             if (Textures[_currentTexture] == null) return;

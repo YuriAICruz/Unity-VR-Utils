@@ -10,18 +10,28 @@ namespace Graphene.VRUtils.StaticNavigation
     {
         public ListInt()
         {
-            pointer = new List<int>();
+            hotspot = new List<HotspotReference>();
         }
 
-        public List<int> pointer;
+        public List<HotspotReference> hotspot;
     }
 
     [Serializable]
     public class CustomSettings
     {
         public bool NormalizeDistances;
+        public bool Spread;
         public bool IsPopupVideo;
         public VideoClip Clip;
+        public Vector3 CamRotation;
+    }
+    
+
+    [Serializable]
+    public class HotspotReference
+    {
+        public int pointer;
+        public Vector3 offset;
     }
 
     public class NavigationMap : MonoBehaviour
@@ -29,10 +39,10 @@ namespace Graphene.VRUtils.StaticNavigation
         private BaseNavigation[] _sphereTextureManager;
 
         [HideInInspector] public List<Vector3> Rooms;
-        [HideInInspector] public List<float> RoomViewRadius;
+        
         [HideInInspector] public List<Vector3> RoomRotationOffset;
 
-        [HideInInspector] public List<ListInt> RoomHide;
+        [HideInInspector] public List<ListInt> RoomShow;
         
         [HideInInspector] public List<string> RoomName;
         
@@ -79,8 +89,7 @@ namespace Graphene.VRUtils.StaticNavigation
             if (_orbiter == null)
                 _orbiter = FindObjectOfType<Orbiter>();
 
-            _orbiter.SetRotation(RoomRotationOffset[id]);
-
+            _orbiter.SetRotation(RoomRotationOffset[id].y, RoomCustomSettings[id].CamRotation);
 
             for (int i = 0; i < Rooms.Count; i++)
             {

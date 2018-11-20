@@ -6,16 +6,24 @@ namespace Graphene.VRUtils.StaticNavigation
 {
     public class Orbiter : MonoBehaviour
     {
-        private Vector3 _rotation;
+        private float _rotation;
 
-        public void SetRotation(Vector3 rotation)
+        private Vector3 _selfRotation;
+
+        public void SetRotation(float rotation, Vector3 selfRotation)
         {
             _rotation = rotation;
+            _selfRotation = selfRotation;
         }
 
         public float GetYRotation()
         {
-            return _rotation.y;
+            return _rotation;
+        }
+
+        public void Rotate()
+        {
+            transform.eulerAngles = _selfRotation;
         }
     }
 }

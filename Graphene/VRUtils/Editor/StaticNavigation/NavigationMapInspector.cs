@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Graphene.VRUtils.Presentation;
 using UnityEditor;
 using UnityEditor.SceneManagement;
@@ -92,7 +93,7 @@ namespace Graphene.VRUtils.StaticNavigation
                 EditorGUILayout.LabelField(i + ":", GUILayout.MaxWidth(36));
 
                 EditorGUI.BeginChangeCheck();
-                var nd = EditorGUILayout.Toggle("Norm Dist", _self.RoomCustomSettings[i].NormalizeDistances, GUILayout.MaxWidth(58));
+                var nd = EditorGUILayout.Toggle("Norm", _self.RoomCustomSettings[i].NormalizeDistances, GUILayout.MaxWidth(48));
                 if (EditorGUI.EndChangeCheck())
                 {
                     Undo.RecordObject(target, "Mod Room NormalizeDistances");
@@ -100,6 +101,28 @@ namespace Graphene.VRUtils.StaticNavigation
                     EditorUtility.SetDirty(_self);
                     EditorSceneManager.MarkSceneDirty(SceneManager.GetActiveScene());
                     UpdateRoomPoints();
+                }
+
+
+                if (_self.RoomCustomSettings[i].NormalizeDistances)
+                {
+                    var lw = EditorGUIUtility.labelWidth;
+                    EditorGUIUtility.labelWidth = 46;
+                    EditorGUI.BeginChangeCheck();
+                    var spd = EditorGUILayout.Toggle("Spread", _self.RoomCustomSettings[i].Spread, GUILayout.MaxWidth(62));
+                    if (EditorGUI.EndChangeCheck())
+                    {
+                        Undo.RecordObject(target, "Mod Room Spread");
+                        _self.RoomCustomSettings[i].Spread = spd;
+                        EditorUtility.SetDirty(_self);
+                        EditorSceneManager.MarkSceneDirty(SceneManager.GetActiveScene());
+                        UpdateRoomPoints();
+                    }
+                    EditorGUIUtility.labelWidth = lw;
+                }
+                else
+                {
+                    _self.RoomCustomSettings[i].Spread = false;
                 }
 
                 EditorGUI.BeginChangeCheck();
@@ -138,22 +161,6 @@ namespace Graphene.VRUtils.StaticNavigation
                     }
                 }
 
-                if (_selectedRoom == i)
-                {
-                    EditorGUI.BeginChangeCheck();
-                    var radius = EditorGUILayout.FloatField("Radius", _self.RoomViewRadius[i]);
-                    if (EditorGUI.EndChangeCheck())
-                    {
-                        Undo.RecordObject(target, "Mod Room Radius");
-
-                        _self.RoomViewRadius[i] = radius;
-                        EditorUtility.SetDirty(_self);
-                        EditorSceneManager.MarkSceneDirty(SceneManager.GetActiveScene());
-
-                        UpdateRoomPoints();
-                    }
-                }
-
                 if (GUILayout.Button("View Gizmos", GUILayout.MaxWidth(120), GUILayout.MinWidth(120)))
                 {
                     ViewGizmos(i);
@@ -164,8 +171,11 @@ namespace Graphene.VRUtils.StaticNavigation
 
                 if (_selectedRoom == i)
                 {
+                    EditorGUILayout.LabelField("Rotations");
+
+
                     EditorGUI.BeginChangeCheck();
-                    var rotation = EditorGUILayout.Vector3Field("Rotation", _self.RoomRotationOffset[i]);
+                    var rotation = EditorGUILayout.Vector3Field("", _self.RoomRotationOffset[i]);
                     if (EditorGUI.EndChangeCheck())
                     {
                         Undo.RecordObject(target, "Mod Room Rotation");
@@ -175,6 +185,17 @@ namespace Graphene.VRUtils.StaticNavigation
                         EditorSceneManager.MarkSceneDirty(SceneManager.GetActiveScene());
 
                         ViewGizmos(i);
+                    }
+
+                    EditorGUI.BeginChangeCheck();
+                    var rot = EditorGUILayout.Vector3Field("Cam ", _self.RoomCustomSettings[i].CamRotation);
+                    if (EditorGUI.EndChangeCheck())
+                    {
+                        Undo.RecordObject(target, "Mod Room Cam Rotation");
+
+                        _self.RoomCustomSettings[i].CamRotation = rot;
+                        EditorUtility.SetDirty(_self);
+                        EditorSceneManager.MarkSceneDirty(SceneManager.GetActiveScene());
                     }
                 }
 
@@ -198,22 +219,22 @@ namespace Graphene.VRUtils.StaticNavigation
 
                         if (GUILayout.Button("Add"))
                         {
-                            _self.RoomHide[i].pointer.Add(0);
+                            _self.RoomShow[i].hotspot.Add(new HotspotReference() {pointer = -1, offset = Vector3.zero});
 
                             EditorUtility.SetDirty(_self);
                             EditorSceneManager.MarkSceneDirty(SceneManager.GetActiveScene());
                         }
 
-                        if (_self.RoomHide[i].pointer == null)
-                            _self.RoomHide[i].pointer = new List<int>();
+                        if (_self.RoomShow[i].hotspot == null)
+                            _self.RoomShow[i].hotspot = new List<HotspotReference>();
 
-                        for (int j = 0; j < _self.RoomHide[i].pointer.Count; j++)
+                        for (int j = 0; j < _self.RoomShow[i].hotspot.Count; j++)
                         {
                             EditorGUILayout.BeginHorizontal();
 
                             if (GUILayout.Button("X", GUILayout.MaxWidth(60), GUILayout.MinWidth(60)))
                             {
-                                _self.RoomHide[i].pointer.RemoveAt(j);
+                                _self.RoomShow[i].hotspot.RemoveAt(j);
 
                                 UpdateRoomPoints();
                                 EditorUtility.SetDirty(_self);
@@ -223,14 +244,31 @@ namespace Graphene.VRUtils.StaticNavigation
 
                             EditorGUI.BeginChangeCheck();
 
-                            var hide = EditorGUILayout.IntField(j.ToString(), _self.RoomHide[i].pointer[j]);
+                            var hide = EditorGUILayout.IntField(j.ToString(), _self.RoomShow[i].hotspot[j].pointer);
 
-                            if (EditorGUI.EndChangeCheck())
+                            if (!_self.RoomShow[i].hotspot.Exists(x => x.pointer == hide))
                             {
-                                Undo.RecordObject(target, "Mod Room Hide");
+                                if (EditorGUI.EndChangeCheck())
+                                {
+                                    Undo.RecordObject(target, "Mod Room Reference");
 
-                                UpdateRoomPoints();
-                                _self.RoomHide[i].pointer[j] = hide;
+                                    _self.RoomShow[i].hotspot[j].pointer = hide;
+                                    UpdateRoomPoints();
+                                }
+                            }
+                            else
+                            {
+                                EditorGUI.BeginChangeCheck();
+
+                                var offs = EditorGUILayout.Vector3Field(j.ToString(), _self.RoomShow[i].hotspot[j].offset);
+
+                                if (EditorGUI.EndChangeCheck())
+                                {
+                                    Undo.RecordObject(target, "Mod Room Reference Offset");
+
+                                    _self.RoomShow[i].hotspot[j].offset = offs;
+                                    UpdateRoomPoints();
+                                }
                             }
 
                             EditorGUILayout.EndHorizontal();
@@ -250,7 +288,7 @@ namespace Graphene.VRUtils.StaticNavigation
                 {
                     Undo.RecordObject(target, "Mod Room IsPopupVideo");
                     _self.RoomCustomSettings[i].IsPopupVideo = pvd;
-                    
+
                     EditorUtility.SetDirty(_self);
                     EditorSceneManager.MarkSceneDirty(SceneManager.GetActiveScene());
                 }
@@ -263,7 +301,7 @@ namespace Graphene.VRUtils.StaticNavigation
                 EditorGUILayout.EndHorizontal();
 
                 EditorGUILayout.Space();
-                
+
                 if (_selectedRoom == i)
                     EditorGUILayout.Space();
             }
@@ -272,14 +310,11 @@ namespace Graphene.VRUtils.StaticNavigation
 
         private void CheckRoomRadius()
         {
-            if (_self.RoomViewRadius == null)
-                _self.RoomViewRadius = new List<float>();
-
             if (_self.RoomRotationOffset == null)
                 _self.RoomRotationOffset = new List<Vector3>();
 
-            if (_self.RoomHide == null)
-                _self.RoomHide = new List<ListInt>();
+            if (_self.RoomShow == null)
+                _self.RoomShow = new List<ListInt>();
 
             if (_self.RoomName == null)
                 _self.RoomName = new List<string>();
@@ -287,19 +322,14 @@ namespace Graphene.VRUtils.StaticNavigation
             if (_self.RoomName == null)
                 _self.RoomCustomSettings = new List<CustomSettings>();
 
-            for (var i = _self.RoomViewRadius.Count; i < _self.Rooms.Count; i++)
-            {
-                _self.RoomViewRadius.Add(0);
-            }
-
             for (var i = _self.RoomRotationOffset.Count; i < _self.Rooms.Count; i++)
             {
                 _self.RoomRotationOffset.Add(Vector3.zero);
             }
 
-            for (var i = _self.RoomHide.Count; i < _self.Rooms.Count; i++)
+            for (var i = _self.RoomShow.Count; i < _self.Rooms.Count; i++)
             {
-                _self.RoomHide.Add(new ListInt());
+                _self.RoomShow.Add(new ListInt());
             }
 
             for (var i = _self.RoomName.Count; i < _self.Rooms.Count; i++)
@@ -345,10 +375,6 @@ namespace Graphene.VRUtils.StaticNavigation
                 }
 
                 if (_selectedRoom != i) continue;
-
-                Handles.DrawWireDisc(_self.Rooms[i], Vector3.up, _self.RoomViewRadius[i]);
-                Handles.DrawWireDisc(_self.Rooms[i], Vector3.right, _self.RoomViewRadius[i]);
-                Handles.DrawWireDisc(_self.Rooms[i], Vector3.forward, _self.RoomViewRadius[i]);
 
                 if (i == 0) continue;
 
@@ -439,7 +465,7 @@ namespace Graphene.VRUtils.StaticNavigation
                 bt.Id = j;
                 bt.Name = _self.RoomName[j];
                 bt.SetName(_self.RoomName[j]);
-                
+
                 bt.IsPopupVideo = _self.RoomCustomSettings[j].IsPopupVideo;
                 bt.Clip = bt.IsPopupVideo ? _self.RoomCustomSettings[j].Clip : null;
 
@@ -447,17 +473,44 @@ namespace Graphene.VRUtils.StaticNavigation
 
                 ch.gameObject.SetActive(i != j);
 
-                if (dir.magnitude > _self.RoomViewRadius[i])
+                ch.gameObject.SetActive(false);
+
+                if (_self.RoomShow[i].hotspot.Exists(x => x.pointer == j))
                 {
-                    ch.gameObject.SetActive(false);
-                }
-                if (_self.RoomHide[i].pointer.Contains(j))
-                {
-                    ch.gameObject.SetActive(false);
+                    ch.gameObject.SetActive(true);
+
+                    var pos = ch.position + _self.RoomShow[i].hotspot.Find(x => x.pointer == j).offset;
+                    ch.position = pos;
+                    ch.LookAt(Vector3.zero);
+
+                    Handles.DrawLine(_self.Rooms[i], pos);
                 }
             }
 
+            if (_self.RoomCustomSettings[i].Spread)
+            {
+                SpreadConnections(room, i);
+            }
+
             EditorSceneManager.MarkSceneDirty(SceneManager.GetActiveScene());
+        }
+
+        private void SpreadConnections(Transform room, int i)
+        {
+            var chs = new List<GameObject>();
+
+            for (int j = 0; j < room.childCount; j++)
+            {
+                chs.Add(room.GetChild(j).gameObject);
+            }
+
+            chs = chs.FindAll(g => g.activeSelf);
+
+            for (var j = 0; j < chs.Count; j++)
+            {
+                chs[j].transform.position = Quaternion.AngleAxis(j / (float) chs.Count * 360, Vector3.up) * room.forward * _self.ButtonRadiusDistance * 10;
+                chs[j].transform.LookAt(Vector3.zero);
+            }
         }
     }
 }
