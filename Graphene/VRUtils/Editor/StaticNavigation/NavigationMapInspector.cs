@@ -295,7 +295,18 @@ namespace Graphene.VRUtils.StaticNavigation
                 EditorGUIUtility.labelWidth = tlw;
                 if (pvd)
                 {
-                    _self.RoomCustomSettings[i].Clip = EditorGUILayout.ObjectField("Clip", _self.RoomCustomSettings[i].Clip, typeof(VideoClip), false) as VideoClip;
+                    EditorGUI.BeginChangeCheck();
+                    var clip = EditorGUILayout.ObjectField("Clip", _self.RoomCustomSettings[i].Clip, typeof(VideoClip), false) as VideoClip;
+                    if (EditorGUI.EndChangeCheck())
+                    {
+                        Undo.RecordObject(target, "Mod Room PopupVideo");
+                        _self.RoomCustomSettings[i].Clip = clip;
+
+                        UpdateRoomPoints();
+                        
+                        EditorUtility.SetDirty(_self);
+                        EditorSceneManager.MarkSceneDirty(SceneManager.GetActiveScene());
+                    }
                 }
 
                 EditorGUILayout.EndHorizontal();
@@ -467,9 +478,16 @@ namespace Graphene.VRUtils.StaticNavigation
                 bt.SetName(_self.RoomName[j]);
 
                 bt.IsPopupVideo = _self.RoomCustomSettings[j].IsPopupVideo;
-                bt.Clip = bt.IsPopupVideo ? _self.RoomCustomSettings[j].Clip : null;
+                
+                if (bt.IsPopupVideo)
+                {
+                    bt.Clip = _self.RoomCustomSettings[j].Clip;
+                }
+                else
+                {
+                    bt.Clip = null;
+                }
 
-                EditorUtility.SetDirty(bt);
 
                 ch.gameObject.SetActive(i != j);
 
@@ -485,6 +503,8 @@ namespace Graphene.VRUtils.StaticNavigation
 
                     Handles.DrawLine(_self.Rooms[i], pos);
                 }
+
+                EditorUtility.SetDirty(bt);
             }
 
             if (_self.RoomCustomSettings[i].Spread)

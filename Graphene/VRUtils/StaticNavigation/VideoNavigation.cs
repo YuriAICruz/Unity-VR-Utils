@@ -19,15 +19,31 @@ namespace Graphene.VRUtils.StaticNavigation
 
         protected override void SetMainTexture()
         {
-            if (Videos[_currentTexture] == null) return;
-            
+            if (_player == null)
+                _player = GetComponent<VideoPlayer>();
+            if (Videos[_currentTexture] == null || _player == null)
+            {
+                if (_player != null)
+                    _player.Stop();
+                
+                return;
+            }
+
             _player.Play();
         }
 
         protected override void SetSecodaryTexture()
         {
-            if (Videos[_currentTexture] == null) return;
-            
+            if (_player == null)
+                _player = GetComponent<VideoPlayer>();
+            if (Videos[_currentTexture] == null || _player == null)
+            {
+                if (_player != null)
+                    _player.Stop();
+                
+                return;
+            }
+
             _player.Stop();
             _player.clip = Videos[_currentTexture];
         }
