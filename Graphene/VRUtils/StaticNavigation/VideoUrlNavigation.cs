@@ -7,6 +7,16 @@ namespace Graphene.VRUtils.StaticNavigation
     [RequireComponent(typeof(VideoPlayer))]
     public class VideoUrlNavigation : BaseNavigation
     {
+        public string[] ResPaths = new string[]
+        {
+            "4k/",
+            "FHD/",
+            "HD/",
+            "SD/"
+        };
+
+        private int _selectedResolution;
+        public string BaseUrl;
         public string[] VideoUrls;
         private VideoPlayer _player;
 
@@ -15,6 +25,23 @@ namespace Graphene.VRUtils.StaticNavigation
             Textures = new Texture[VideoUrls.Length].ToList();
 
             _player = GetComponent<VideoPlayer>();
+
+            if (Screen.currentResolution.width > 1920)
+            {
+                _selectedResolution = 0;
+            }
+            else if (Screen.currentResolution.width <= 1920)
+            {
+                _selectedResolution = 1;
+            }
+            else if (Screen.currentResolution.width <= 1080)
+            {
+                _selectedResolution = 2;
+            }
+            else
+            {
+                _selectedResolution = 3;
+            }
         }
 
         protected override void SetMainTexture()
@@ -25,7 +52,7 @@ namespace Graphene.VRUtils.StaticNavigation
             {
                 if (_player != null)
                     _player.Stop();
-                
+
                 return;
             }
 
@@ -40,12 +67,12 @@ namespace Graphene.VRUtils.StaticNavigation
             {
                 if (_player != null)
                     _player.Stop();
-                
+
                 return;
             }
 
             _player.Stop();
-            _player.url = VideoUrls[_currentTexture];
+            _player.url = BaseUrl + ResPaths[_selectedResolution] + VideoUrls[_currentTexture];
         }
 
         protected override void SetUpdateBlend(float t)
