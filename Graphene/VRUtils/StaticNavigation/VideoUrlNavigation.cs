@@ -1,5 +1,7 @@
 ﻿using System.Linq;
+using System.Collections;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.Video;
 
 namespace Graphene.VRUtils.StaticNavigation
@@ -20,21 +22,24 @@ namespace Graphene.VRUtils.StaticNavigation
         public string[] VideoUrls;
         private VideoPlayer _player;
 
+        private Text _infoText;
+
         private void Awake()
         {
             Textures = new Texture[VideoUrls.Length].ToList();
 
             _player = GetComponent<VideoPlayer>();
+            _infoText = Camera.main.GetComponentInChildren<Text>();
 
             if (Screen.currentResolution.width > 1920)
             {
                 _selectedResolution = 0;
             }
-            else if (Screen.currentResolution.width <= 1920)
+            else if (Screen.currentResolution.width > 1280)
             {
                 _selectedResolution = 1;
             }
-            else if (Screen.currentResolution.width <= 1080)
+            else if (Screen.currentResolution.width > 1080)
             {
                 _selectedResolution = 2;
             }
@@ -73,6 +78,28 @@ namespace Graphene.VRUtils.StaticNavigation
 
             _player.Stop();
             _player.url = BaseUrl + ResPaths[_selectedResolution] + VideoUrls[_currentTexture];
+            _player.errorReceived += ErrorReceived;
+            StartCoroutine(PrepareVideo());
+        }
+
+        protected IEnumerator PrepareVideo()
+        {
+            _player.Prepare();
+            _infoText.text = "Baixando o vídeo...";
+
+            while (!_player.isPrepared)
+            {
+                yield return null;
+            }
+
+            _infoText.text = "";
+        }
+
+        protected void ErrorReceived (VideoPlayer source, string msg)
+        {
+            Debug.Log("Video Player: " + msg);
+            _infoText.text = "Não foi possível baixar o vídeo";
+            _player.errorReceived -= ErrorReceived;
         }
 
         protected override void SetUpdateBlend(float t)
