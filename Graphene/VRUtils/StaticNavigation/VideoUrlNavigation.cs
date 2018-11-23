@@ -100,6 +100,13 @@ namespace Graphene.VRUtils.StaticNavigation
             Debug.Log("Video Player: " + msg);
             _infoText.text = "Não foi possível baixar o vídeo";
             _player.errorReceived -= ErrorReceived;
+            StartCoroutine(CleanInfoText());
+        }
+
+        protected IEnumerator CleanInfoText()
+        {
+            yield return new WaitForSeconds(3);
+            _infoText.text = "";
         }
 
         protected override void SetUpdateBlend(float t)
