@@ -296,11 +296,13 @@ namespace Graphene.VRUtils.StaticNavigation
                 if (pvd)
                 {
                     EditorGUI.BeginChangeCheck();
-                    var clip = EditorGUILayout.ObjectField("Clip", _self.RoomCustomSettings[i].Clip, typeof(VideoClip), false) as VideoClip;
+                    //var clip = EditorGUILayout.ObjectField("Clip", _self.RoomCustomSettings[i].Clip, typeof(VideoClip), false) as VideoClip;
+                    var clipName = EditorGUILayout.TextField("ClipName", _self.RoomCustomSettings[i].ClipName);
                     if (EditorGUI.EndChangeCheck())
                     {
                         Undo.RecordObject(target, "Mod Room PopupVideo");
-                        _self.RoomCustomSettings[i].Clip = clip;
+                        //_self.RoomCustomSettings[i].Clip = clip;
+                        _self.RoomCustomSettings[i].ClipName = clipName;
 
                         UpdateRoomPoints();
                         
@@ -481,11 +483,11 @@ namespace Graphene.VRUtils.StaticNavigation
                 
                 if (bt.IsPopupVideo)
                 {
-                    bt.Clip = _self.RoomCustomSettings[j].Clip;
+                    bt.ClipName = _self.RoomCustomSettings[j].ClipName;
                 }
                 else
                 {
-                    bt.Clip = null;
+                    bt.ClipName = "";
                 }
 
 

@@ -120,7 +120,6 @@ namespace Graphene.VRUtils.StaticNavigation
 
         IEnumerator LoadDevice(string newDevice)
         {
-            Debug.Log("Device: " + newDevice);
             XRSettings.LoadDeviceByName(newDevice);
             yield return null;
             if (isVR)

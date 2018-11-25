@@ -14,7 +14,8 @@ namespace Graphene.VRUtils.Presentation
         public NavigationMap NavigationMap;
 
         public bool IsPopupVideo;
-        public VideoClip Clip;
+        //public VideoClip Clip;
+        public string ClipName;
 
         public int Id;
         public string Name;
@@ -79,7 +80,7 @@ namespace Graphene.VRUtils.Presentation
 
             if (IsPopupVideo && !_videoShown)
             {
-                _player.Play(Clip);
+                _player.Play(ClipName);
                 _videoWindow.Show();
                 _videoShown = true;
             }

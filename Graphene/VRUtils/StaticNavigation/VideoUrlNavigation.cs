@@ -29,7 +29,7 @@ namespace Graphene.VRUtils.StaticNavigation
             Textures = new Texture[VideoUrls.Length].ToList();
 
             _player = GetComponent<VideoPlayer>();
-            _infoText = Camera.main.GetComponentInChildren<Text>();
+            _infoText = GameObject.Find("VideoLoadingText").GetComponent<Text>();
 
             if (Screen.currentResolution.width > 1920)
             {
@@ -37,11 +37,11 @@ namespace Graphene.VRUtils.StaticNavigation
             }
             else if (Screen.currentResolution.width > 1280)
             {
-                _selectedResolution = 1;
+                _selectedResolution = 2; // was 1, reduced because videos were not being played
             }
             else if (Screen.currentResolution.width > 1080)
             {
-                _selectedResolution = 2;
+                _selectedResolution = 3; // was 2
             }
             else
             {
@@ -97,8 +97,7 @@ namespace Graphene.VRUtils.StaticNavigation
 
         protected void ErrorReceived (VideoPlayer source, string msg)
         {
-            Debug.Log("Video Player: " + msg);
-            _infoText.text = "Não foi possível baixar o vídeo";
+            _infoText.text = "Não foi possível exibir o vídeo";
             _player.errorReceived -= ErrorReceived;
             StartCoroutine(CleanInfoText());
         }
