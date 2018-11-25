@@ -22,7 +22,14 @@ namespace Graphene.VRUtils.StaticNavigation
             Textures = new Texture[VideoUrls.Length].ToList();
 
             _player.Setup(GetComponent<VideoPlayer>());
+
+            _player.errorReceived += OnError;
             _infoText = FindObjectOfType<VideoLoadingText>();
+        }
+
+        private void OnError(VideoPlayer arg1, string arg2)
+        {
+            StartCoroutine(Transit(_currentTexture));
         }
 
         protected override void SetMainTexture()

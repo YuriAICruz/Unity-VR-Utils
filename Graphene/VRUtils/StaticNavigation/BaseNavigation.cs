@@ -26,7 +26,7 @@ namespace Graphene.VRUtils.StaticNavigation
             StartCoroutine(Transit());
         }
 
-        IEnumerator Transit(int index = -1)
+        protected IEnumerator Transit(int index = -1)
         {
 #if UNITY_EDITOR
             GetMaterial();
