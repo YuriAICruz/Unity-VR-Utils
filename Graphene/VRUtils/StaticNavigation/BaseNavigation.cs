@@ -13,6 +13,8 @@ namespace Graphene.VRUtils.StaticNavigation
 
         public float TransitionTime = 0.4f;
 
+        protected bool _holdFade;
+
         protected void NextTexture()
         {
             _currentTexture++;
@@ -50,6 +52,10 @@ namespace Graphene.VRUtils.StaticNavigation
                 t += Time.deltaTime;
             }
             OnFullBlack();
+            while (_holdFade)
+            {
+                yield return null;
+            }
             while (t > 0)
             {
                 SetUpdateBlend(t / TransitionTime);
