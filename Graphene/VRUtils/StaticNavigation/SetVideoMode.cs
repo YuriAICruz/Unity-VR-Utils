@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.SceneManagement;
 using UnityEngine.XR;
 
 namespace Graphene.VRUtils.StaticNavigation
@@ -15,16 +14,22 @@ namespace Graphene.VRUtils.StaticNavigation
 		private GameObject instructionsPanel;
 		private GameObject holder;
 
+		Button continueBt;
+
+
 		private void Awake()
 		{
 			XRSettings.enabled = false;
 	
 			logoPanel = GameObject.Find("MainMenuCanvas/LogoPanel");
+
 			instructionsPanel = GameObject.Find("MainMenuCanvas/InstructionsPanel");
-			if (instructionsPanel)
-			{
-				instructionsPanel.SetActive(false);
-			}
+
+			continueBt = instructionsPanel.GetComponentInChildren<Button>();
+			continueBt.interactable = false;
+
+			instructionsPanel.SetActive(false);
+
 			holder = GameObject.Find("Holder");
 		}
 		
@@ -39,51 +44,38 @@ namespace Graphene.VRUtils.StaticNavigation
 			logoPanel.GetComponent<Image>().CrossFadeAlpha(0f, 1f, false);
 		}
 
-		public string Scene = "Demo";
-
 		public void SetMonoscopic()
 		{
 			STEREO_MODE = false;
-			StartCoroutine(LoadWelcomeScene());
+			StartCoroutine(WaitForClickToContinue());
 		}
 
 		public void SetStereoscopic()
 		{
 			STEREO_MODE = true;
-			StartCoroutine(LoadWelcomeScene());
+			StartCoroutine(WaitForClickToContinue());
 		}
 
-		public void ShowInstructions()
+		private IEnumerator WaitForClickToContinue()
 		{
 			string help = "Instruções\n\n";
 			help += STEREO_MODE ? "Coloque os óculos de VR e vire a cabeça para ver as cenas em 360°." : "Deslize o dedo na tela para girar a cena.";
 			help += " Para mudar de sala centralize o cursor por alguns segundos no círculo com o nome do ambiente escolhido.";
-			help += "\n\nNecessário ter conexão de boa velocidade (Wi-Fi).\n\nCarregando...";
+			help += "\n\nNecessário ter conexão de boa velocidade (Wi-Fi).";
+			string lastLine = "\n\n...";
 
 			Text txt = instructionsPanel.GetComponentInChildren<Text>(true);
 
-			if (txt)
-			{
-				txt.text = help;
-			}
+			txt.text = help + lastLine;
 
 			logoPanel.SetActive(false);
 			holder.SetActive(false);
 			instructionsPanel.SetActive(true);
-		}
 
-		private IEnumerator LoadWelcomeScene()
-		{
-			ShowInstructions();
+			yield return new WaitForSeconds(3); // wait at least 5 seconds
 
-			yield return new WaitForSeconds(5); // wait at least 2 seconds
-
-			AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(Scene);
-
-			while (!asyncLoad.isDone)
-			{
-				yield return null;
-			}
+			txt.text = help + "\n\nToque na tela para iniciar...";
+			continueBt.interactable = true;
 		}
 	}
 }
