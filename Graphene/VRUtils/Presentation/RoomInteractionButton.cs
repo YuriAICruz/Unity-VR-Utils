@@ -14,7 +14,7 @@ namespace Graphene.VRUtils.Presentation
         public NavigationMap NavigationMap;
 
         public bool IsPopupVideo;
-        //public VideoClip Clip;
+        public VideoClip Clip;
         public string ClipName;
 
         public int Id;
@@ -22,6 +22,8 @@ namespace Graphene.VRUtils.Presentation
         private VideoWindow _videoWindow;
         private VideoPlayerView _player;
         private bool _videoShown;
+
+        private bool _fromURL = VideoPlayerView.fromURL;
 
         private void Setup()
         {
@@ -80,7 +82,14 @@ namespace Graphene.VRUtils.Presentation
 
             if (IsPopupVideo && !_videoShown)
             {
-                _player.Play(ClipName);
+                if (_fromURL)
+                {
+                    _player.Play(ClipName);
+                }
+                else
+                {
+                    _player.Play(Clip);
+                }
                 _videoWindow.Show();
                 _videoShown = true;
             }

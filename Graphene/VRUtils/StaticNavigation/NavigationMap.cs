@@ -22,7 +22,7 @@ namespace Graphene.VRUtils.StaticNavigation
         public bool NormalizeDistances;
         public bool Spread;
         public bool IsPopupVideo;
-        //public VideoClip Clip;
+        public VideoClip Clip;
         public string ClipName;
         public Vector3 CamRotation;
     }
