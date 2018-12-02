@@ -10,19 +10,15 @@ namespace Graphene.VRUtils.StaticNavigation
 	{
 		public static bool STEREO_MODE = false;
 
-		private GameObject logoPanel;
 		private GameObject instructionsPanel;
 		private GameObject holder;
 
 		Button continueBt;
 
-
 		private void Awake()
 		{
 			XRSettings.enabled = false;
 	
-			logoPanel = GameObject.Find("MainMenuCanvas/LogoPanel");
-
 			instructionsPanel = GameObject.Find("MainMenuCanvas/InstructionsPanel");
 
 			continueBt = instructionsPanel.GetComponentInChildren<Button>();
@@ -33,17 +29,6 @@ namespace Graphene.VRUtils.StaticNavigation
 			holder = GameObject.Find("Holder");
 		}
 		
-		private IEnumerator Start()
-		{
-			yield return new WaitForSeconds(1.5f);
-
-			foreach (Graphic graphic in logoPanel.GetComponentsInChildren<Graphic>())
-			{
-				graphic.CrossFadeAlpha(0f, 0.5f, false);
-			}
-			logoPanel.GetComponent<Image>().CrossFadeAlpha(0f, 1f, false);
-		}
-
 		public void SetMonoscopic()
 		{
 			STEREO_MODE = false;
@@ -68,7 +53,6 @@ namespace Graphene.VRUtils.StaticNavigation
 
 			txt.text = help + lastLine;
 
-			logoPanel.SetActive(false);
 			holder.SetActive(false);
 			instructionsPanel.SetActive(true);
 
