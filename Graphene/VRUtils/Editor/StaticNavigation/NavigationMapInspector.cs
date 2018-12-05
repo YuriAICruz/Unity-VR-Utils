@@ -126,7 +126,7 @@ namespace Graphene.VRUtils.StaticNavigation
                 }
 
                 EditorGUI.BeginChangeCheck();
-                var str = EditorGUILayout.TextField(_self.RoomName[i]);
+                var str = EditorGUILayout.TextArea(_self.RoomName[i]);
                 if (EditorGUI.EndChangeCheck())
                 {
                     Undo.RecordObject(target, "Mod Room Name");
