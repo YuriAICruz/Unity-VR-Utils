@@ -13,11 +13,13 @@ namespace Graphene.VRUtils.StaticNavigation
 		private GameObject instructionsPanel;
 		private GameObject holder;
 
+		private GameObject localization;
+
 		Button continueBt;
 
 		private void Awake()
 		{
-            Screen.orientation = ScreenOrientation.LandscapeLeft;
+			Screen.orientation = ScreenOrientation.LandscapeLeft;
 
 			XRSettings.enabled = false;
 	
@@ -29,6 +31,8 @@ namespace Graphene.VRUtils.StaticNavigation
 			instructionsPanel.SetActive(false);
 
 			holder = GameObject.Find("Holder");
+
+			localization = GameObject.Find("Localization");
 		}
 		
 		public void SetMonoscopic()
@@ -60,9 +64,14 @@ namespace Graphene.VRUtils.StaticNavigation
 			string touchTheScreen_pt = "\n\nToque na tela para iniciar...";
 			string touchTheScreen_es = "\n\nToque la pantalla para iniciar...";
 
-			// XXX Localization:
 			string help = help_pt;
 			string touchTheScreen = touchTheScreen_pt;
+			
+			if (PlayerPrefs.GetString("language", "PT") == "ES")
+			{
+				help = help_es;
+				touchTheScreen = touchTheScreen_es;
+			}
 
 			Text txt = instructionsPanel.GetComponentInChildren<Text>(true);
 
