@@ -13,8 +13,6 @@ namespace Graphene.VRUtils.StaticNavigation
 		private GameObject instructionsPanel;
 		private GameObject holder;
 
-		private GameObject localization;
-
 		Button continueBt;
 
 		private void Awake()
@@ -31,8 +29,6 @@ namespace Graphene.VRUtils.StaticNavigation
 			instructionsPanel.SetActive(false);
 
 			holder = GameObject.Find("Holder");
-
-			localization = GameObject.Find("Localization");
 		}
 		
 		public void SetMonoscopic()
