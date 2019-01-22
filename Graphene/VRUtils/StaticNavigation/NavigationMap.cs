@@ -50,7 +50,7 @@ namespace Graphene.VRUtils.StaticNavigation
 
     public class NavigationMap : MonoBehaviour
     {
-        public List<string> RoomName;
+        //public List<string> RoomName;
         
         private BaseNavigation[] _sphereTextureManager;
 
