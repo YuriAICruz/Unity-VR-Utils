@@ -20,6 +20,8 @@ namespace Graphene.VRUtils.StaticNavigation
         
         public VideoUrlSourceManage _player;
 
+        private bool _fromURL = VideoPlayerView.fromURL;
+
         private VideoLoadingText _infoText;
 
         private void Awake()
@@ -92,7 +94,11 @@ namespace Graphene.VRUtils.StaticNavigation
         protected IEnumerator PrepareVideo()
         {
             _player.Prepare();
-            _infoText.SetText("Baixando o vídeo...");
+
+            if (_fromURL)
+            {
+                _infoText.SetText("Baixando o vídeo...");
+            }
 
             while (!_player.IsPrepared())
             {
