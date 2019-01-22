@@ -1,6 +1,11 @@
 ﻿using System.Linq;
 using System.Collections;
 using Graphene.UiGenerics;
+
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
+
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Video;
@@ -70,6 +75,12 @@ namespace Graphene.VRUtils.StaticNavigation
 
                 return;
             }
+            
+            
+#if UNITY_EDITOR
+            if(!EditorApplication.isPlaying)
+                return;
+#endif
 
             _player.Stop();
             _player.SetUrl(BaseUrl + _player.GetResUrlPath(), VideoUrls[_currentTexture]);

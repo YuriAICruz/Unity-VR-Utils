@@ -18,7 +18,7 @@ namespace Graphene.VRUtils.Presentation
         public string ClipName;
 
         public int Id;
-        public string Name;
+        public string[] Names;
         private VideoWindow _videoWindow;
         private VideoPlayerView _player;
         private bool _videoShown;
@@ -39,7 +39,7 @@ namespace Graphene.VRUtils.Presentation
             
             Reset();
 
-            SetName(Name);
+            SetName(Names);
         }
 
         private void OnEnable()
@@ -66,12 +66,19 @@ namespace Graphene.VRUtils.Presentation
             }
         }
 
-        public void SetName(string name)
+        public void SetName(string[] name)
         {
-            Name = name;
+            Names = name;
 
             var tx = transform.GetComponentInChildren<Text>();
-            tx.text = Name;
+            if (PlayerPrefs.GetString("language", "PT") == "PT")
+            {
+                tx.text = Names[0];
+            }
+            else
+            {
+                tx.text = Names[1];
+            }
         }
 
         protected override void OnClick()

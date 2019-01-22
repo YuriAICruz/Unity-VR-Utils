@@ -21,12 +21,15 @@ namespace Graphene.VRUtils.StaticNavigation
     {
         public bool NormalizeDistances;
         public bool Spread;
+
         public bool IsPopupVideo;
+
         //public VideoClip Clip;
         public string ClipName;
+
         public Vector3 CamRotation;
     }
-    
+
 
     [Serializable]
     public class HotspotReference
@@ -35,18 +38,31 @@ namespace Graphene.VRUtils.StaticNavigation
         public Vector3 offset;
     }
 
+    [Serializable]
+    public class RoomNamesReference
+    {
+        public RoomNamesReference()
+        {
+            names = new List<string> {"PT", "ES"};
+        }
+
+        public List<string> names;
+    }
+
     public class NavigationMap : MonoBehaviour
     {
+        public List<string> RoomName;
+        
         private BaseNavigation[] _sphereTextureManager;
 
         [HideInInspector] public List<Vector3> Rooms;
-        
+
         [HideInInspector] public List<Vector3> RoomRotationOffset;
 
         [HideInInspector] public List<ListInt> RoomShow;
-        
-        [HideInInspector] public List<string> RoomName;
-        
+
+        [HideInInspector] public List<RoomNamesReference> RoomNames;
+
         [HideInInspector] public List<CustomSettings> RoomCustomSettings;
 
         private GameObject _canvas;

@@ -124,17 +124,25 @@ namespace Graphene.VRUtils.StaticNavigation
                 {
                     _self.RoomCustomSettings[i].Spread = false;
                 }
-
+                
                 EditorGUI.BeginChangeCheck();
-                var str = EditorGUILayout.TextField(_self.RoomName[i]);
+                
+//                _self.RoomNames[i].names[0] = _self.RoomName[i];
+//                _self.RoomNames[i].names[1] = _self.RoomName[i] + "_ES";
+                
+                var strPt = EditorGUILayout.TextField(_self.RoomNames[i].names[0]);
+                var strEs = EditorGUILayout.TextField(_self.RoomNames[i].names[1]);
+                
+                
                 if (EditorGUI.EndChangeCheck())
                 {
-                    Undo.RecordObject(target, "Mod Room Name");
-                    _self.RoomName[i] = str;
+                    Undo.RecordObject(target, "Mod Room Names");
+                    _self.RoomNames[i].names[1] = strEs;
+                    _self.RoomNames[i].names[0] = strPt;
                     EditorUtility.SetDirty(_self);
                     EditorSceneManager.MarkSceneDirty(SceneManager.GetActiveScene());
                 }
-
+                
                 EditorGUILayout.EndHorizontal();
 
                 EditorGUILayout.BeginHorizontal();
@@ -305,7 +313,7 @@ namespace Graphene.VRUtils.StaticNavigation
                         _self.RoomCustomSettings[i].ClipName = clipName;
 
                         UpdateRoomPoints();
-                        
+
                         EditorUtility.SetDirty(_self);
                         EditorSceneManager.MarkSceneDirty(SceneManager.GetActiveScene());
                     }
@@ -329,11 +337,11 @@ namespace Graphene.VRUtils.StaticNavigation
             if (_self.RoomShow == null)
                 _self.RoomShow = new List<ListInt>();
 
-            if (_self.RoomName == null)
-                _self.RoomName = new List<string>();
-
-            if (_self.RoomName == null)
-                _self.RoomCustomSettings = new List<CustomSettings>();
+            if (_self.RoomNames == null)
+            {
+                _self.RoomNames = new List<RoomNamesReference>();
+                //_self.RoomCustomSettings = new List<CustomSettings>();
+            }
 
             for (var i = _self.RoomRotationOffset.Count; i < _self.Rooms.Count; i++)
             {
@@ -345,9 +353,9 @@ namespace Graphene.VRUtils.StaticNavigation
                 _self.RoomShow.Add(new ListInt());
             }
 
-            for (var i = _self.RoomName.Count; i < _self.Rooms.Count; i++)
+            for (var i = _self.RoomNames.Count; i < _self.Rooms.Count; i++)
             {
-                _self.RoomName.Add("Hotspot");
+                _self.RoomNames.Add(new RoomNamesReference());
             }
 
             for (var i = _self.RoomCustomSettings.Count; i < _self.Rooms.Count; i++)
@@ -476,11 +484,11 @@ namespace Graphene.VRUtils.StaticNavigation
 
                 bt.NavigationMap = _self;
                 bt.Id = j;
-                bt.Name = _self.RoomName[j];
-                bt.SetName(_self.RoomName[j]);
+                bt.Names = _self.RoomNames[j].names.ToArray();
+                bt.SetName(_self.RoomNames[j].names.ToArray());
 
                 bt.IsPopupVideo = _self.RoomCustomSettings[j].IsPopupVideo;
-                
+
                 if (bt.IsPopupVideo)
                 {
                     bt.ClipName = _self.RoomCustomSettings[j].ClipName;

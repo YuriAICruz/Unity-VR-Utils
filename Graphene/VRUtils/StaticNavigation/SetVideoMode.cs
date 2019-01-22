@@ -41,6 +41,7 @@ namespace Graphene.VRUtils.StaticNavigation
 			{
 				graphic.CrossFadeAlpha(0f, 0.5f, false);
 			}
+			
 			logoPanel.GetComponent<Image>().CrossFadeAlpha(0f, 1f, false);
 		}
 
