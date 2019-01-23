@@ -130,8 +130,8 @@ namespace Graphene.VRUtils.StaticNavigation
 //                _self.RoomNames[i].names[0] = _self.RoomName[i];
 //                _self.RoomNames[i].names[1] = _self.RoomName[i] + "_ES";
                 
-                var strPt = EditorGUILayout.TextField(_self.RoomNames[i].names[0]);
-                var strEs = EditorGUILayout.TextField(_self.RoomNames[i].names[1]);
+                var strPt = EditorGUILayout.TextArea(_self.RoomNames[i].names[0]);
+                var strEs = EditorGUILayout.TextArea(_self.RoomNames[i].names[1]);
                 if (EditorGUI.EndChangeCheck())
                 {
                     Undo.RecordObject(target, "Mod Room Names");
