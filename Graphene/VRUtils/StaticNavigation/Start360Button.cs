@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Graphene.UiGenerics;
+using UnityEngine.SceneManagement;
 
 namespace Graphene.VRUtils.StaticNavigation
 {
@@ -25,6 +26,14 @@ namespace Graphene.VRUtils.StaticNavigation
 				yield return null;
 			}
 
+		}
+
+		void Update()
+		{
+			if (Input.GetKeyDown(KeyCode.Escape))
+			{
+				SceneManager.LoadScene("MainMenu");
+			}
 		}
 	}
 }

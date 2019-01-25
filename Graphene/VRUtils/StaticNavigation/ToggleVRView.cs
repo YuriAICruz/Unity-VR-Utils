@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Video;
 using UnityEngine.XR;
+using UnityEngine.SceneManagement;
 
 namespace Graphene.VRUtils.StaticNavigation
 {
@@ -46,7 +47,8 @@ namespace Graphene.VRUtils.StaticNavigation
             {
                 if (navigationMap.GetCurrentId() == mainMenuId)
                 {
-                    Application.Quit();
+                    // Application.Quit();
+		            SceneManager.LoadScene("AppMenu");
                 }
                 else
                 {

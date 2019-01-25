@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.XR;
+using UnityEngine.SceneManagement;
 
 namespace Graphene.VRUtils.StaticNavigation
 {
@@ -80,6 +81,14 @@ namespace Graphene.VRUtils.StaticNavigation
 
 			txt.text = $"{help}{touchTheScreen}";
 			continueBt.interactable = true;
+		}
+
+		void Update()
+		{
+			if (Input.GetKeyDown(KeyCode.Escape))
+			{
+				SceneManager.LoadScene("AppMenu");
+			}
 		}
 	}
 }
