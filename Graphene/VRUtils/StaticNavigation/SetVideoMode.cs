@@ -10,6 +10,7 @@ namespace Graphene.VRUtils.StaticNavigation
 	public class SetVideoMode : MonoBehaviour
 	{
 		public static bool STEREO_MODE = false;
+		public string appStartScene = "AppMenu";
 
 		private GameObject instructionsPanel;
 		private GameObject holder;
@@ -87,7 +88,8 @@ namespace Graphene.VRUtils.StaticNavigation
 		{
 			if (Input.GetKeyDown(KeyCode.Escape))
 			{
-				SceneManager.LoadScene("AppMenu");
+            	Screen.orientation = ScreenOrientation.Portrait;
+				SceneManager.LoadScene(appStartScene);
 			}
 		}
 	}
