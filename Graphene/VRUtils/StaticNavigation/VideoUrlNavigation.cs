@@ -24,6 +24,8 @@ namespace Graphene.VRUtils.StaticNavigation
 
         private VideoLoadingText _infoText;
 
+        private bool isPT;
+
         private void Awake()
         {
             Textures = new Texture[VideoUrls.Length].ToList();
@@ -32,6 +34,8 @@ namespace Graphene.VRUtils.StaticNavigation
 
             _player.errorReceived += OnError;
             _infoText = FindObjectOfType<VideoLoadingText>();
+
+            isPT = PlayerPrefs.GetString("language", "PT") == "PT";
         }
 
         private void OnError(VideoPlayer arg1, string arg2)
@@ -97,7 +101,8 @@ namespace Graphene.VRUtils.StaticNavigation
 
             if (_fromURL)
             {
-                _infoText.SetText("Baixando o vídeo...");
+                string msg = isPT ? "Baixando o vídeo..." : "Descargando el vídeo...";
+                _infoText.SetText(msg);
             }
 
             while (!_player.IsPrepared())
@@ -114,7 +119,9 @@ namespace Graphene.VRUtils.StaticNavigation
 
         protected void ErrorReceived (VideoPlayer source, string msg)
         {
-            _infoText.SetText("Não foi possível exibir o vídeo");
+            string s = isPT ? "Não foi possível exibir o vídeo" : "No es posible ver el video";
+            _infoText.SetText(s);
+
             _player.errorReceived -= ErrorReceived;
             StartCoroutine(CleanInfoText());
         }
