@@ -10,16 +10,17 @@ namespace Graphene.VRUtils.StaticNavigation
 	public class Start360Button : ButtonView
 	{
 
-		public string Scene = "Demo";
+		public string tourScene = "Demo";
+		public string mainMenuScene = "MainMenu";
 
 		protected override void OnClick()
 		{
-			StartCoroutine(LoadScene());
+			StartCoroutine(LoadScene(tourScene));
 		}
 
-		protected IEnumerator LoadScene()
+		protected IEnumerator LoadScene(string scene)
 		{
-			AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(Scene);
+			AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(scene);
 
 			while (!asyncLoad.isDone)
 			{
@@ -32,7 +33,9 @@ namespace Graphene.VRUtils.StaticNavigation
 		{
 			if (Input.GetKeyDown(KeyCode.Escape))
 			{
-				SceneManager.LoadScene("MainMenu");
+				Screen.orientation = ScreenOrientation.LandscapeLeft;
+				//StartCoroutine(LoadScene(mainMenuScene));
+				SceneManager.LoadScene(mainMenuScene);
 			}
 		}
 	}

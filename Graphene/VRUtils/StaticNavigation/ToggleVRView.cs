@@ -18,6 +18,8 @@ namespace Graphene.VRUtils.StaticNavigation
         public NavigationMap navigationMap;
         public int mainMenuId;
 
+		public string appStartScene = "AppMenu";
+
 #if UNITY_EDITOR
         public float _speed;
 #endif
@@ -48,7 +50,9 @@ namespace Graphene.VRUtils.StaticNavigation
                 if (navigationMap.GetCurrentId() == mainMenuId)
                 {
                     // Application.Quit();
-		            SceneManager.LoadScene("AppMenu");
+                    XRSettings.enabled = false;
+                    Screen.orientation = ScreenOrientation.Portrait;
+		            SceneManager.LoadScene(appStartScene);
                 }
                 else
                 {

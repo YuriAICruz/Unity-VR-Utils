@@ -12,6 +12,8 @@ namespace Graphene.VRUtils.StaticNavigation
 		public static bool STEREO_MODE = false;
 		public string appStartScene = "AppMenu";
 
+		public GameObject coverPanel;
+
 		private GameObject instructionsPanel;
 		private GameObject holder;
 
@@ -84,11 +86,23 @@ namespace Graphene.VRUtils.StaticNavigation
 			continueBt.interactable = true;
 		}
 
+		protected IEnumerator LoadAppStartScene()
+		{
+			AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(appStartScene);
+
+			while (!asyncLoad.isDone)
+			{
+				yield return null;
+			}
+		}
+
 		void Update()
 		{
 			if (Input.GetKeyDown(KeyCode.Escape))
 			{
+				coverPanel.SetActive(true);
             	Screen.orientation = ScreenOrientation.Portrait;
+				//StartCoroutine(LoadAppStartScene());
 				SceneManager.LoadScene(appStartScene);
 			}
 		}
