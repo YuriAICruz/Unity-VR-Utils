@@ -12,6 +12,7 @@ namespace Graphene.VRUtils
         private bool _tracking;
         private List<XRNodeState> _nodes;
         private Vector3 _position;
+        public Vector3 Offset;
         private Quaternion _rotation;
 
         private void Start()
@@ -47,7 +48,7 @@ namespace Graphene.VRUtils
 
                 if (node.TryGetPosition(out _position))
                 {
-                    transform.localPosition = _position;
+                    transform.localPosition = _position+Offset;
                 }
                 if (node.TryGetRotation(out _rotation))
                 {
