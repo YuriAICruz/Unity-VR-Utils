@@ -17,6 +17,7 @@ namespace Graphene.VRUtils
             
             Text.text = $"dist: {_handDataListener.GetHandDistance()}\n" +
                         $"angle: {_handDataListener.GetHandsAngle()}\n" +
+                        $"angle waist: {_handDataListener.GetHandsAngleFromWaist()}\n" +
                         $"delta: {_handDataListener.GetHandsAngleDelta()}";
         }
     }

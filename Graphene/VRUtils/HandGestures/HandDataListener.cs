@@ -10,10 +10,10 @@ namespace Graphene.VRUtils
         private Manager _manager;
         private List<Vector3> _lastPositions;
 
-        public LineRenderer[] LineRenderers;
         private float _dist;
         private float _angle, _lastAngle;
         private float _delta;
+        private float _angleWaist;
 
         private void Awake()
         {
@@ -30,25 +30,10 @@ namespace Graphene.VRUtils
             var pos = GetHandsPositions();
             for (int i = 0, n = _lastPositions.Count; i < n - 1; i++)
             {
-                LineRenderers[0].SetPosition(0, pos[i]);
-                LineRenderers[0].SetPosition(1, pos[(i + 1) % n]);
-
-                LineRenderers[1].SetPosition(0, pos[i]);
-                LineRenderers[1].SetPosition(1, _lastPositions[i]);
-
                 _dist = (pos[i] - pos[(i + 1) % n]).magnitude;
-                var cross = Vector3.Cross(pos[i] - pos[(i + 1) % n], pos[i] - _manager.Head.transform.position);
 
                 GetAngle(pos, i, n);
-
-                LineRenderers[2].SetPosition(0, pos[i]);
-                LineRenderers[2].SetPosition(1, pos[i] + cross * 10);
             }
-
-            LineRenderers[3].SetPosition(0, _manager.Head.transform.position + Vector3.down * 0.5f);
-            LineRenderers[3].SetPosition(1, _manager.Head.transform.position + _manager.Head.transform.forward * 10 + Vector3.down * 0.5f);
-
-            LineRenderers[3].startColor = Color.Lerp(Color.red, Color.blue, Mathf.Abs(_angle - _lastAngle));
 
             _delta = _angle - _lastAngle;
             _lastAngle = _angle;// - _lastAngle * Time.deltaTime;
@@ -58,15 +43,23 @@ namespace Graphene.VRUtils
 
         private void GetAngle(List<Vector3> pos, int i, int n)
         {
-            var head = _manager.Head.transform;
+            var head = _manager.Head.transform.parent;
             var a = pos[i] - head.position;
             var b = pos[(i + 1) % n] - head.position;
 
             a = head.InverseTransformDirection(a);
             b = head.InverseTransformDirection(b);
 
+            var c = a;
+            var d = b;
+
+            c.y = 0;
+            d.y = 0;
+
             a.x = 0;
             b.x = 0;
+            
+            _angleWaist = Vector3.Angle(c, d);
             
             _angle = Vector3.Angle(a, b);
             var cross = Vector3.Cross(a, b);
@@ -86,6 +79,10 @@ namespace Graphene.VRUtils
         public float GetHandsAngle()
         {
             return _angle;
+        }
+        public float GetHandsAngleFromWaist()
+        {
+            return _angleWaist;
         }
 
         public float GetHandsAngleDelta()
