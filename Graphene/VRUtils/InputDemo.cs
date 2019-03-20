@@ -6,6 +6,7 @@ using UnityEngine;
 
 namespace Graphene.VRUtils
 {
+    [SerializeField]
     public class InputDemo : InputSystem
     {
         public event Action<bool> GrabL, GrabR;
@@ -13,6 +14,9 @@ namespace Graphene.VRUtils
 
         protected override void ExecuteCombo(int id)
         {
+            if (debug)
+                Debug.Log(id);
+            
             switch (id)
             {
                 case 0:

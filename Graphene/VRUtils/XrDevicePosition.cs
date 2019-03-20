@@ -5,7 +5,7 @@ using UnityEngine.XR;
 
 namespace Graphene.VRUtils
 {
-    public class HandPosition : MonoBehaviour
+    public class XrDevicePosition : MonoBehaviour
     {
         public XRNode Point;
 

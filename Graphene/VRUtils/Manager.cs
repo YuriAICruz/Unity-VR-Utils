@@ -7,6 +7,8 @@ namespace Graphene.VRUtils
     {
         public InputDemo Input;
 
+        public XrDevicePosition Head;
+
         public HandBehaviour[] Hands;
 
         private void Start()
