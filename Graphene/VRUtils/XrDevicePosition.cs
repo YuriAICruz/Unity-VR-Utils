@@ -9,7 +9,7 @@ namespace Graphene.VRUtils
     {
         public XRNode Point;
 
-        private bool _tracking;
+        private bool _tracking = true;
         private List<XRNodeState> _nodes;
         private Vector3 _position;
         public Vector3 Offset;
@@ -48,7 +48,7 @@ namespace Graphene.VRUtils
 
                 if (node.TryGetPosition(out _position))
                 {
-                    transform.localPosition = _position+Offset;
+                    transform.localPosition = _position + Offset;
                 }
                 if (node.TryGetRotation(out _rotation))
                 {
