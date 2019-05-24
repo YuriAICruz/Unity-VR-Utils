@@ -2,10 +2,15 @@
     "name": "Graphene.VRUtils",
     "references": [
         "Graphene.InputManager",
-        "Graphene.UiGenerics"
+        "Graphene.UiGenerics",
+        "Graphene.Utils"
     ],
     "optionalUnityReferences": [],
     "includePlatforms": [],
     "excludePlatforms": [],
-    "allowUnsafeCode": false
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": []
 }
