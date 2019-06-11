@@ -11,8 +11,9 @@ namespace Graphene.VRUtils
 
         public Transform Tip;
 
-        private void Awake()
+        protected override void Awake()
         {
+            base.Awake();
             _bullets = MaxBullets;
             _particle = Resources.Load<Bullet>("Particles/Bullet");
         }

@@ -13,15 +13,15 @@ namespace Graphene.VRUtils
 
         void Update()
         {
-//            if(Input.GetKeyDown(KeyCode.Space))
-//            {
-//               ResetPosition(); 
-//            }
+            if(Input.GetKeyDown(KeyCode.Space))
+            {
+               ResetPosition(); 
+            }
         }
         
         public void ResetPosition()
         {
-            transform.position = Target.position - transform.GetComponentInChildren<Camera>().transform.localPosition;
+            transform.position = Target.position - (-transform.position + Camera.main.transform.position);
         }
     }
 }

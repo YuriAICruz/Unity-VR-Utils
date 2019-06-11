@@ -48,20 +48,44 @@ namespace Graphene.VRUtils
 
                 if (_interactible == null) continue;
 
-                FitGrabbed();
-
-                return;
+                if (FitGrabbed())
+                {
+                    return;
+                }
             }
 
             EnableCollider();
         }
 
-        private void FitGrabbed()
+        private void OnCollisionEnter(Collision other)
         {
-            _renderer.enabled = false;
-            _interactible.OnGrab(transform);
+            _interactible = other.transform.GetComponent<HandInteractible>();
 
-            DisableCollider();
+            if (_interactible == null) return;
+
+            _interactible.OnCollisionEnter();
+        }
+
+        private void OnCollisionExit(Collision other)
+        {
+            _interactible = other.transform.GetComponent<HandInteractible>();
+
+            if (_interactible == null) return;
+
+            _interactible.OnCollisionExit();
+        }
+
+        private bool FitGrabbed()
+        {
+            if (_interactible.OnGrab(transform))
+            {
+                _renderer.enabled = false;
+                DisableCollider();
+                return true;
+            }
+
+            _interactible = null;
+            return false;
         }
 
         void EnableCollider()

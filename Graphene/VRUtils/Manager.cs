@@ -5,6 +5,14 @@ namespace Graphene.VRUtils
 {
     public class Manager : MonoBehaviour
     {
+        public static bool WorldReset { get; private set; }
+        public static float WorldResetHeight { get; private set; }
+
+        [SerializeField] private bool _worldReset = true;
+        [SerializeField] private float _worldResetHeight = 0.5f;
+
+        public bool CanResetOntrigger;
+
         public InputDemo Input;
 
         public XrDevicePosition Head;
@@ -14,7 +22,14 @@ namespace Graphene.VRUtils
         public Transform HeadHolder;
         public Transform InitialPosition;
 
-        private void Start()
+        protected virtual void Awake()
+        {
+            WorldReset = _worldReset;
+
+            WorldResetHeight = _worldResetHeight;
+        }
+
+        protected virtual void Start()
         {
             Input = new InputDemo();
             Input.Init();
@@ -30,7 +45,12 @@ namespace Graphene.VRUtils
         {
             Debug.Log("Reset");
 
-            HeadHolder.position = new Vector3(InitialPosition.position.x, HeadHolder.position.y, InitialPosition.position.z);
+            var reseter = transform.parent.GetComponent<ResetHeadPosition>();
+
+            if (reseter)
+                reseter.ResetPosition();
+            else
+                HeadHolder.position = new Vector3(InitialPosition.position.x, HeadHolder.position.y, InitialPosition.position.z);
         }
 
         private void Trigger(int i, bool trigger)
@@ -44,7 +64,7 @@ namespace Graphene.VRUtils
             if (i >= Hands.Length) return;
             Hands[i].Grab(grab);
 
-            if (Input.GrabLState && Input.GrabRState)
+            if (CanResetOntrigger && Input.GrabLState && Input.GrabRState)
                 Reset();
         }
 
