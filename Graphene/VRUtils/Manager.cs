@@ -32,7 +32,7 @@ namespace Graphene.VRUtils
 
         protected virtual void Start()
         {
-            //Input = new InputDemo();
+            Input = GetComponent<InputDemo>();
             Input.Init();
 
             Input.GrabL += (b) => Grab(0, b);
