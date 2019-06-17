@@ -1,4 +1,5 @@
-﻿using Graphene.VRUtils;
+﻿using System.Linq.Expressions;
+using Graphene.VRUtils;
 using UnityEngine;
 
 namespace Graphene.VRUtils
@@ -31,7 +32,7 @@ namespace Graphene.VRUtils
 
         protected virtual void Start()
         {
-            Input = new InputDemo();
+            //Input = new InputDemo();
             Input.Init();
 
             Input.GrabL += (b) => Grab(0, b);
@@ -39,12 +40,16 @@ namespace Graphene.VRUtils
 
             Input.TriggerL += (b) => Trigger(0, b);
             Input.TriggerR += (b) => Trigger(1, b);
+
+            Reset();
         }
 
-        void Reset()
+        protected void Reset()
         {
             Debug.Log("Reset");
 
+            if (transform.parent == null) return;
+            
             var reseter = transform.parent.GetComponent<ResetHeadPosition>();
 
             if (reseter)
@@ -53,15 +58,16 @@ namespace Graphene.VRUtils
                 HeadHolder.position = new Vector3(InitialPosition.position.x, HeadHolder.position.y, InitialPosition.position.z);
         }
 
-        private void Trigger(int i, bool trigger)
+        protected void Trigger(int i, bool trigger)
         {
             if (i >= Hands.Length) return;
             Hands[i].Trigger(trigger);
         }
 
-        private void Grab(int i, bool grab)
+        protected void Grab(int i, bool grab)
         {
             if (i >= Hands.Length) return;
+            
             Hands[i].Grab(grab);
 
             if (CanResetOntrigger && Input.GrabLState && Input.GrabRState)

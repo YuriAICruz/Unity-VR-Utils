@@ -25,7 +25,12 @@ namespace Graphene.VRUtils
             _audioSource.playOnAwake = false;
             _audioSource.clip = Click;
 
-            _interactible = true;
+            ChangeInteractible(true);
+        }
+
+        protected virtual void ChangeInteractible(bool value)
+        {
+            _interactible = value;
         }
 
         public override bool OnGrab(Transform parent)
@@ -33,8 +38,9 @@ namespace Graphene.VRUtils
             return false;
         }
 
-        public override void Release()
+        public override bool Release()
         {
+            return true;
         }
 
         public override void OnCollisionEnter()
@@ -58,7 +64,7 @@ namespace Graphene.VRUtils
             
             _audioSource.Play();
             
-            _interactible = false;
+            ChangeInteractible(false);
             _clickAnimation = StartCoroutine(AnimateClick());
         }
 
@@ -89,7 +95,7 @@ namespace Graphene.VRUtils
                 yield return null;
             }
             
-            _interactible = true;
+            ChangeInteractible(true);
         }
 
     }

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Graphene.Shader.Scripts;
+using UnityEngine;
 
 namespace Graphene.VRUtils
 {
@@ -17,16 +18,23 @@ namespace Graphene.VRUtils
 
         private float _lastDelta;
         protected float _lastResetTime;
+        protected TransitionOutlineMaterialManager _outline;
+        protected Collider _collider;
 
         protected override void Awake()
         {
             base.Awake();
 
+            _outline = GetComponent<TransitionOutlineMaterialManager>();
             _rigidbody = GetComponent<Rigidbody>();
+            _collider = GetComponent<Collider>();
         }
 
         public override bool OnGrab(Transform parent)
         {
+            if (_outline)
+                _outline.HideOutline();
+
             _rigidbody.isKinematic = true;
 
             _lastPos = transform.position;
@@ -34,16 +42,41 @@ namespace Graphene.VRUtils
             return base.OnGrab(parent);
         }
 
-        public override void Release()
+        protected override void HandClose()
         {
+            if(!_collider.enabled) return;
+            
+            base.HandClose();
+
+            if (_outline)
+                _outline.ShowOutline();
+        }
+
+        protected override void HandFar()
+        {
+            if(!_collider.enabled) return;
+            
+            base.HandFar();
+
+            if (_outline)
+                _outline.HideOutline();
+        }
+
+        public override bool Release()
+        {
+            if (_outline)
+                _outline.HideOutline();
+            
             _rigidbody.isKinematic = false;
             _rigidbody.velocity = _velocity * Force;
 
-            base.Release();
+            return base.Release();
         }
 
-        private void Update()
+        protected override void Update()
         {
+            base.Update();
+
             if (!_rigidbody.isKinematic)
             {
                 if (CanWorldReset && Manager.WorldReset && transform.position.y < Manager.WorldResetHeight)
