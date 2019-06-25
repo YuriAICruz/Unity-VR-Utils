@@ -1,10 +1,19 @@
-﻿using Graphene.VRUtils;
+﻿using System.Linq.Expressions;
+using Graphene.VRUtils;
 using UnityEngine;
 
 namespace Graphene.VRUtils
 {
     public class Manager : MonoBehaviour
     {
+        public static bool WorldReset { get; private set; }
+        public static float WorldResetHeight { get; private set; }
+
+        [SerializeField] private bool _worldReset = true;
+        [SerializeField] private float _worldResetHeight = 0.5f;
+
+        public bool CanResetOntrigger;
+
         public InputDemo Input;
 
         public XrDevicePosition Head;
@@ -14,9 +23,16 @@ namespace Graphene.VRUtils
         public Transform HeadHolder;
         public Transform InitialPosition;
 
-        private void Start()
+        protected virtual void Awake()
         {
-            Input = new InputDemo();
+            WorldReset = _worldReset;
+
+            WorldResetHeight = _worldResetHeight;
+        }
+
+        protected virtual void Start()
+        {
+            Input = GetComponent<InputDemo>();
             Input.Init();
 
             Input.GrabL += (b) => Grab(0, b);
@@ -24,27 +40,37 @@ namespace Graphene.VRUtils
 
             Input.TriggerL += (b) => Trigger(0, b);
             Input.TriggerR += (b) => Trigger(1, b);
+
+            Reset();
         }
 
-        void Reset()
+        protected void Reset()
         {
             Debug.Log("Reset");
 
-            HeadHolder.position = new Vector3(InitialPosition.position.x, HeadHolder.position.y, InitialPosition.position.z);
+            if (transform.parent == null) return;
+            
+            var reseter = transform.parent.GetComponent<ResetHeadPosition>();
+
+            if (reseter)
+                reseter.ResetPosition();
+            else
+                HeadHolder.position = new Vector3(InitialPosition.position.x, HeadHolder.position.y, InitialPosition.position.z);
         }
 
-        private void Trigger(int i, bool trigger)
+        protected void Trigger(int i, bool trigger)
         {
             if (i >= Hands.Length) return;
             Hands[i].Trigger(trigger);
         }
 
-        private void Grab(int i, bool grab)
+        protected void Grab(int i, bool grab)
         {
             if (i >= Hands.Length) return;
+            
             Hands[i].Grab(grab);
 
-            if (Input.GrabLState && Input.GrabRState)
+            if (CanResetOntrigger && Input.GrabLState && Input.GrabRState)
                 Reset();
         }
 

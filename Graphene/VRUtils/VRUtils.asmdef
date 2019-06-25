@@ -3,7 +3,8 @@
     "references": [
         "Graphene.InputManager",
         "Graphene.UiGenerics",
-        "Graphene.Utils"
+        "Graphene.Utils",
+        "Graphene.Shaders"
     ],
     "optionalUnityReferences": [],
     "includePlatforms": [],

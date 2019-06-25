@@ -8,21 +8,19 @@ namespace Graphene.VRUtils
 
         private HandInteractible _interactible;
 
-        private Renderer _renderer;
-        private Material _material;
-
         private Collider _collider;
+
+        public GameObject[] Controller;
 
         private void Awake()
         {
-            _renderer = GetComponent<Renderer>();
-            _material = _renderer.material;
             _collider = GetComponent<Collider>();
+            _collider.enabled = true;
         }
 
         public void Grab(bool grab)
         {
-            _material.color = grab ? Color.green : Color.white;
+            GrabFeedback(grab);
             if (_interactible != null)
             {
                 if (!grab)
@@ -48,46 +46,97 @@ namespace Graphene.VRUtils
 
                 if (_interactible == null) continue;
 
-                FitGrabbed();
-
-                return;
+                if (FitGrabbed())
+                {
+                    return;
+                }
             }
 
             EnableCollider();
         }
 
-        private void FitGrabbed()
+        private void OnCollisionEnter(Collision other)
         {
-            _renderer.enabled = false;
-            _interactible.OnGrab(transform);
+            _interactible = other.transform.GetComponent<HandInteractible>();
 
-            DisableCollider();
+            if (_interactible == null) return;
+
+            _interactible.OnCollisionEnter();
+        }
+
+        private void OnCollisionExit(Collision other)
+        {
+            _interactible = other.transform.GetComponent<HandInteractible>();
+
+            if (_interactible == null) return;
+
+            _interactible.OnCollisionExit();
+        }
+
+        private bool FitGrabbed()
+        {
+            if (_interactible.OnGrab(transform))
+            {
+                HideController();
+                DisableCollider();
+                return true;
+            }
+
+            _interactible = null;
+            return false;
         }
 
         void EnableCollider()
         {
             if (_collider == null) return;
 
-            _collider.enabled = true;
+            //_collider.enabled = true;
         }
 
         void DisableCollider()
         {
             if (_collider == null) return;
 
-            _collider.enabled = false;
+            //_collider.enabled = false;
         }
 
         private void Release()
         {
-            _renderer.enabled = true;
-            _interactible.Release();
-            _interactible = null;
+            if (_interactible.Release())
+            {
+                ShowController();
+                _interactible = null;
+            }
+        }
+
+        void HideController()
+        {
+            foreach (var ctrl in Controller)
+            {
+                ctrl.SetActive(false);
+            }
+        }
+
+        void ShowController()
+        {
+            foreach (var ctrl in Controller)
+            {
+                ctrl.SetActive(true);
+            }
+        }
+
+
+        private void GrabFeedback(bool grab)
+        {
+        }
+
+        private void TriggerFeedback(bool trigger)
+        {
         }
 
         public void Trigger(bool trigger)
         {
-            _material.color = trigger ? Color.red : Color.white;
+            TriggerFeedback(trigger);
             if (_interactible == null) return;
 
             _interactible.Trigger();

@@ -6,7 +6,6 @@ using UnityEngine;
 
 namespace Graphene.VRUtils
 {
-    [SerializeField]
     public class InputDemo : InputSystem
     {
         public bool GrabLState;
