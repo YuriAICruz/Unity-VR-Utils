@@ -6,8 +6,8 @@ namespace Graphene.VRUtils
     [RequireComponent(typeof(AudioSource))]
     public class ButtonInteractive : HandInteractible
     {
-        public float ClickDuration;
-        public float Height = 0.2f;
+        public float ClickDuration = 0.2f;
+        public float Height = 0.008f;
         private Coroutine _clickAnimation;
 
         private AudioSource _audioSource;
