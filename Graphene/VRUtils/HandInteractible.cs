@@ -1,9 +1,12 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace Graphene.VRUtils
 {
     public class HandInteractible : MonoBehaviour
     {
+        public event Action OnGrabed, OnReleased;
+        
         public float GlowDistance;
         
         public Vector3 PositionOffset;
@@ -31,7 +34,7 @@ namespace Graphene.VRUtils
             _initialRotation = transform.rotation;
 
             _vrManager = FindObjectOfType<Manager>();
-            GlowDistance = _vrManager.Hands[0].GetComponent<SphereCollider>().radius * _vrManager.Hands[0].transform.localScale.x * 2;
+            GlowDistance = _vrManager.Hands[0].GlowDistance;
         }
 
         protected virtual void Update()
@@ -86,6 +89,8 @@ namespace Graphene.VRUtils
 
             transform.localPosition = PositionOffset;
             transform.localRotation = Quaternion.Euler(RotationOffset);
+            
+            OnGrabed?.Invoke();
 
             return true;
         }
@@ -94,12 +99,15 @@ namespace Graphene.VRUtils
         {
             _grabbed = false;
             transform.parent = _parent;
+            
+            OnReleased?.Invoke();
+            
             return true;
             //transform.localPosition = Vector3.zero;
         }
 
 
-        protected virtual void ResetPosition()
+        public virtual void ResetPosition()
         {
             transform.position = _initialPosition;
             transform.rotation = _initialRotation;

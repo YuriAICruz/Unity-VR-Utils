@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Linq;
+using UnityEngine;
 
 namespace Graphene.VRUtils
 {
@@ -11,6 +12,7 @@ namespace Graphene.VRUtils
         private Collider _collider;
 
         public GameObject[] Controller;
+        public float GlowDistance = 10;
 
         private void Awake()
         {
@@ -21,6 +23,7 @@ namespace Graphene.VRUtils
         public void Grab(bool grab)
         {
             GrabFeedback(grab);
+
             if (_interactible != null)
             {
                 if (!grab)
@@ -37,7 +40,9 @@ namespace Graphene.VRUtils
                 return;
             }
 
-            var hits = Physics.SphereCastAll(transform.position, GrabRange, transform.forward, GrabRange);
+            var hits = Physics.OverlapSphere(transform.position, GrabRange); //TODO
+            hits = hits.ToList().OrderBy(x => (transform.position - x.transform.position).magnitude).ToArray();
+
             foreach (var hit in hits)
             {
                 if (hit.transform == transform) continue;
@@ -57,20 +62,21 @@ namespace Graphene.VRUtils
 
         private void OnCollisionEnter(Collision other)
         {
-            _interactible = other.transform.GetComponent<HandInteractible>();
+//            _interactible = other.transform.GetComponent<HandInteractible>();
+//
+//            if (_interactible == null) return;
 
-            if (_interactible == null) return;
-
-            _interactible.OnCollisionEnter();
+//            _interactible.OnCollisionEnter();
         }
 
         private void OnCollisionExit(Collision other)
         {
-            _interactible = other.transform.GetComponent<HandInteractible>();
+//            TODO: redudant methods OnCollisionExit and OnCollisionEnter are called by Unity internal physics system
+//            _interactible = other.transform.GetComponent<HandInteractible>();
+//
+//            if (_interactible == null) return;
 
-            if (_interactible == null) return;
-
-            _interactible.OnCollisionExit();
+//            _interactible.OnCollisionExit();
         }
 
         private bool FitGrabbed()
@@ -137,6 +143,7 @@ namespace Graphene.VRUtils
         public void Trigger(bool trigger)
         {
             TriggerFeedback(trigger);
+            
             if (_interactible == null) return;
 
             _interactible.Trigger();

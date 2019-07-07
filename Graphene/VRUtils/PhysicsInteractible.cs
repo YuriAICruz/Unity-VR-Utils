@@ -1,11 +1,12 @@
-﻿using Graphene.Shader.Scripts;
+﻿using System;
+using Graphene.Shader.Scripts;
 using UnityEngine;
 
 namespace Graphene.VRUtils
 {
     [RequireComponent(typeof(Rigidbody))]
     public class PhysicsInteractible : HandInteractible
-    {
+    {   
         public float Force = 5000;
 
         public bool CanWorldReset = true;
@@ -26,6 +27,10 @@ namespace Graphene.VRUtils
             base.Awake();
 
             _outline = GetComponent<TransitionOutlineMaterialManager>();
+            if (!_outline)
+            {
+                _outline = transform.GetComponentInChildren<TransitionOutlineMaterialManager>();
+            }
             _rigidbody = GetComponent<Rigidbody>();
             _collider = GetComponent<Collider>();
         }
@@ -96,7 +101,7 @@ namespace Graphene.VRUtils
             _lastDelta = delta;
         }
 
-        protected override void ResetPosition()
+        public override void ResetPosition()
         {
             if (Time.timeSinceLevelLoad - _lastResetTime <= 1) return;
 
