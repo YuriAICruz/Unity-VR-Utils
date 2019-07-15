@@ -1,17 +1,20 @@
-﻿using Graphene.Shader.Scripts;
+﻿using System;
+using Graphene.Shader.Scripts;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Graphene.VRUtils
 {
     [RequireComponent(typeof(Rigidbody))]
     public class PhysicsInteractible : HandInteractible
     {
-        public float Force = 5000;
+        private float _throwForce = 36;
 
         public bool CanWorldReset = true;
 
-        protected Rigidbody _rigidbody;
+        public Rigidbody _rigidbody;
 
+        [SerializeField]
         private Vector3 _velocity;
 
         private Vector3 _lastPos;
@@ -20,6 +23,8 @@ namespace Graphene.VRUtils
         protected float _lastResetTime;
         protected TransitionOutlineMaterialManager _outline;
         protected Collider _collider;
+        private Vector3 _angularVelocity;
+        private Vector3 _lastRot;
 
         protected override void Awake()
         {
@@ -68,7 +73,8 @@ namespace Graphene.VRUtils
                 _outline.HideOutline();
             
             _rigidbody.isKinematic = false;
-            _rigidbody.velocity = _velocity * Force;
+            _rigidbody.velocity = _velocity * _throwForce;
+            _rigidbody.angularVelocity = _angularVelocity * 0.10f;
 
             return base.Release();
         }
@@ -87,13 +93,23 @@ namespace Graphene.VRUtils
                 return;
             }
 
-            var pos = transform.position;
             var delta = Time.deltaTime;
 
-            _velocity = (transform.position - _lastPos) * _lastDelta;
+            //_velocity = (transform.position - _lastPos) * _lastDelta;
 
-            _lastPos = pos;
             _lastDelta = delta;
+        }
+
+        protected virtual void FixedUpdate()
+        {
+            var pos = transform.position;
+            var rot = transform.eulerAngles;
+            
+            _velocity = (pos - _lastPos);
+            _angularVelocity = (rot - _lastRot);
+            
+            _lastPos = pos;
+            _lastRot = rot;
         }
 
         protected override void ResetPosition()

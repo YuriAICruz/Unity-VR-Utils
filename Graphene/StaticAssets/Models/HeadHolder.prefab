@@ -13,6 +13,8 @@ GameObject:
   - component: {fileID: 23857271965468286}
   - component: {fileID: 114467711881703374}
   - component: {fileID: 114697631903121826}
+  - component: {fileID: 285966446010124385}
+  - component: {fileID: 3858982360184450227}
   m_Layer: 0
   m_Name: Hand L
   m_TagString: Untagged
@@ -106,6 +108,36 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   GrabRange: 0.2
+  Controller: []
+--- !u!135 &285966446010124385
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1415793474565594}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.5
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!54 &3858982360184450227
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1415793474565594}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 0
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!1 &1428166083262254
 GameObject:
   m_ObjectHideFlags: 0
@@ -151,9 +183,10 @@ Camera:
   m_ClearFlags: 1
   m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
   m_projectionMatrixMode: 1
+  m_GateFitMode: 2
+  m_FOVAxisMode: 0
   m_SensorSize: {x: 36, y: 24}
   m_LensShift: {x: 0, y: 0}
-  m_GateFitMode: 2
   m_FocalLength: 50
   m_NormalizedViewPortRect:
     serializedVersion: 2
@@ -212,7 +245,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4337168034003046}
-  - component: {fileID: 1737253040}
   m_Layer: 0
   m_Name: HeadHolder
   m_TagString: Untagged
@@ -237,19 +269,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1737253040
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1537029352151876}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 24770f32d5104cc45bf0a428eb14d0bf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Speed: 1
 --- !u!1 &1959265603645536
 GameObject:
   m_ObjectHideFlags: 0
@@ -263,6 +282,8 @@ GameObject:
   - component: {fileID: 23191753952223836}
   - component: {fileID: 114664815827848112}
   - component: {fileID: 114489825237208470}
+  - component: {fileID: 8214371683351497997}
+  - component: {fileID: 6082726984763246849}
   m_Layer: 0
   m_Name: Hand R
   m_TagString: Untagged
@@ -356,3 +377,33 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   GrabRange: 0.2
+  Controller: []
+--- !u!135 &8214371683351497997
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1959265603645536}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.5
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!54 &6082726984763246849
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1959265603645536}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 0
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0

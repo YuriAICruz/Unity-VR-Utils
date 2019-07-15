@@ -23,14 +23,14 @@ namespace Graphene.VRUtils
 
         protected Quaternion _initialRotation;
         protected Vector3 _initialPosition;
-        private Manager _vrManager;
+        private BaseManager _vrManager;
 
         protected virtual void Awake()
         {
             _initialPosition = transform.position;
             _initialRotation = transform.rotation;
 
-            _vrManager = FindObjectOfType<Manager>();
+            _vrManager = FindObjectOfType<BaseManager>();
             GlowDistance = _vrManager.Hands[0].GetComponent<SphereCollider>().radius * _vrManager.Hands[0].transform.localScale.x * 2;
         }
 

@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.Experimental.PlayerLoop;
 
 namespace Graphene.VRUtils
 {
@@ -11,6 +12,12 @@ namespace Graphene.VRUtils
         private Collider _collider;
 
         public GameObject[] Controller;
+
+        private Vector3 _movementVelocity;
+        private Vector3 _lastPosition;
+
+        public bool isFoot;
+        
 
         private void Awake()
         {
@@ -55,22 +62,31 @@ namespace Graphene.VRUtils
             EnableCollider();
         }
 
+
         private void OnCollisionEnter(Collision other)
         {
-            _interactible = other.transform.GetComponent<HandInteractible>();
+            if(!isFoot) return;
+            
+            var phyin = other.transform.GetComponent<PhysicsInteractible>();
+            
+            if(phyin == null) return;
+            phyin._rigidbody.isKinematic = false;
+            phyin._rigidbody.AddForce(-_movementVelocity * 2000);
+        }
 
-            if (_interactible == null) return;
-
-            _interactible.OnCollisionEnter();
+        private void FixedUpdate()
+        {
+            _movementVelocity = _lastPosition - transform.position; 
+            _lastPosition = transform.position; 
         }
 
         private void OnCollisionExit(Collision other)
         {
-            _interactible = other.transform.GetComponent<HandInteractible>();
-
-            if (_interactible == null) return;
-
-            _interactible.OnCollisionExit();
+//            _interactible = other.transform.GetComponent<HandInteractible>();
+//
+//            if (_interactible == null) return;
+//
+//            _interactible.OnCollisionExit();
         }
 
         private bool FitGrabbed()
