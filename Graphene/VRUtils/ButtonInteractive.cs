@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using Graphene.Shader.Scripts;
 using UnityEngine;
 
 namespace Graphene.VRUtils
@@ -12,6 +13,8 @@ namespace Graphene.VRUtils
 
         private AudioSource _audioSource;
         public AudioClip Click;
+        
+        protected TransitionOutlineMaterialManager _outline;
 
         private bool _interactible;
 
@@ -19,6 +22,12 @@ namespace Graphene.VRUtils
         {
             base.Awake();
 
+            _outline = GetComponent<TransitionOutlineMaterialManager>();
+            if (!_outline)
+            {
+                _outline = transform.GetComponentInChildren<TransitionOutlineMaterialManager>();
+            }
+            
             _audioSource = GetComponent<AudioSource>();
             
             _audioSource.loop = false;
@@ -66,6 +75,8 @@ namespace Graphene.VRUtils
             
             ChangeInteractible(false);
             _clickAnimation = StartCoroutine(AnimateClick());
+            
+            _outline.HideOutline();
         }
 
         IEnumerator AnimateClick()
