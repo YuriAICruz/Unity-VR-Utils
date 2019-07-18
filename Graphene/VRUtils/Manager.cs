@@ -1,4 +1,5 @@
-﻿using System.Linq.Expressions;
+﻿using System;
+using System.Linq.Expressions;
 using Graphene.VRUtils;
 using UnityEngine;
 
@@ -8,7 +9,7 @@ namespace Graphene.VRUtils
     {
         public InputDemo Input;
 
-        protected virtual void Awake()
+        protected override void Awake()
         {
             WorldReset = _worldReset;
 
@@ -20,11 +21,11 @@ namespace Graphene.VRUtils
             Input = GetComponent<InputDemo>();
             Input.Init();
 
-            Input.GrabL += (b) => Grab(0, b);
-            Input.GrabR += (b) => Grab(1, b);
+            Input.GrabL += (b) => OnGrabHit(0, b);
+            Input.GrabR += (b) => OnGrabHit(1, b);
 
-            Input.TriggerL += (b) => Trigger(0, b);
-            Input.TriggerR += (b) => Trigger(1, b);
+            Input.TriggerL += (b) => OnTriggerHit(0, b);
+            Input.TriggerR += (b) => OnTriggerHit(1, b);
 
             Reset();
         }
@@ -43,18 +44,15 @@ namespace Graphene.VRUtils
                 HeadHolder.position = new Vector3(InitialPosition.position.x, HeadHolder.position.y, InitialPosition.position.z);
         }
 
-        protected void Trigger(int i, bool trigger)
+        protected void OnTriggerHit(int i, bool trigger)
         {
-            if (i >= Hands.Length) return;
-            Hands[i].Trigger(trigger);
+            Grab?.Invoke(i, trigger);
         }
 
-        protected void Grab(int i, bool grab)
+        protected void OnGrabHit(int i, bool grab)
         {
-            if (i >= Hands.Length) return;
+            Grab?.Invoke(i, grab);
             
-            Hands[i].Grab(grab);
-
             if (CanResetOntrigger && Input.GrabLState && Input.GrabRState)
                 Reset();
         }

@@ -31,6 +31,7 @@ namespace Graphene.VRUtils
             _initialRotation = transform.rotation;
 
             _vrManager = FindObjectOfType<BaseManager>();
+            
             GlowDistance = _vrManager.Hands[0].GetComponent<SphereCollider>().radius * _vrManager.Hands[0].transform.localScale.x * 2;
         }
 

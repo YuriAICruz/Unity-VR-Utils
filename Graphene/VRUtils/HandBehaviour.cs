@@ -1,8 +1,15 @@
-﻿using UnityEngine;
-using UnityEngine.Experimental.PlayerLoop;
+﻿using System;
+using UnityEngine;
+using UnityEngine.XR;
 
 namespace Graphene.VRUtils
 {
+    public enum ControllerInputIndex
+    {
+        LeftHand = 0,
+        RightHand = 1
+    }
+
     public class HandBehaviour : MonoBehaviour
     {
         public float GrabRange;
@@ -17,16 +24,38 @@ namespace Graphene.VRUtils
         private Vector3 _lastPosition;
 
         public bool isFoot;
-        
+        private BaseManager _vrManager;
+        public ControllerInputIndex _index;
+
+        private XRNode _xrNode;
+        private InputDevice _device;
 
         private void Awake()
         {
             _collider = GetComponent<Collider>();
             _collider.enabled = true;
+
+            switch (_index)
+            {
+                case ControllerInputIndex.LeftHand:
+                    _xrNode = XRNode.LeftHand;
+                    break;
+                case ControllerInputIndex.RightHand:
+                    _xrNode = XRNode.RightHand;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
+            _vrManager = FindObjectOfType<BaseManager>();
+            _vrManager.Grab += Grab;
+            _vrManager.Trigger += Trigger;
         }
 
-        public void Grab(bool grab)
+        public void Grab(int index, bool grab)
         {
+            if ((int) _index != index) return;
+
             GrabFeedback(grab);
             if (_interactible != null)
             {
@@ -62,22 +91,39 @@ namespace Graphene.VRUtils
             EnableCollider();
         }
 
-
         private void OnCollisionEnter(Collision other)
         {
-            if(!isFoot) return;
-            
+            if (!isFoot) return;
+
             var phyin = other.transform.GetComponent<PhysicsInteractible>();
-            
-            if(phyin == null) return;
+
+            if (phyin == null) return;
             phyin._rigidbody.isKinematic = false;
             phyin._rigidbody.AddForce(-_movementVelocity * 2000);
         }
 
+        public void Vibrate()
+        {
+            if(isFoot) return;
+            
+            _device = InputDevices.GetDeviceAtXRNode(_xrNode);
+            
+            if (_device.isValid)
+            {
+                HapticCapabilities hapcap = new HapticCapabilities();
+                _device.TryGetHapticCapabilities(out hapcap);
+
+                if (hapcap.supportsImpulse)
+                {
+                    _device.SendHapticImpulse(0, 0.5f);
+                }
+            }
+        }
+
         private void FixedUpdate()
         {
-            _movementVelocity = _lastPosition - transform.position; 
-            _lastPosition = transform.position; 
+            _movementVelocity = _lastPosition - transform.position;
+            _lastPosition = transform.position;
         }
 
         private void OnCollisionExit(Collision other)
@@ -91,6 +137,8 @@ namespace Graphene.VRUtils
 
         private bool FitGrabbed()
         {
+            Vibrate();
+            
             if (_interactible.OnGrab(transform))
             {
                 HideController();
@@ -118,6 +166,8 @@ namespace Graphene.VRUtils
 
         private void Release()
         {
+            Vibrate();
+            
             if (_interactible.Release())
             {
                 ShowController();
@@ -150,8 +200,9 @@ namespace Graphene.VRUtils
         {
         }
 
-        public void Trigger(bool trigger)
+        public void Trigger(int index, bool trigger)
         {
+            if ((int) _index != index) return;
             TriggerFeedback(trigger);
             if (_interactible == null) return;
 

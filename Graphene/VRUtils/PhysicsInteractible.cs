@@ -102,8 +102,16 @@ namespace Graphene.VRUtils
 
         protected virtual void FixedUpdate()
         {
-            var pos = transform.position;
-            var rot = transform.eulerAngles;
+            if (!_grabbed)
+            {
+                _velocity = Vector3.zero;
+                _angularVelocity = Vector3.zero;
+                return;
+            }
+
+            var t = transform;
+            var pos = t.position;
+            var rot = t.eulerAngles;
             
             _velocity = (pos - _lastPos);
             _angularVelocity = (rot - _lastRot);

@@ -1,9 +1,13 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace Graphene.VRUtils
 {
     public abstract class BaseManager : MonoBehaviour
     {
+        public Action<int, bool> Grab;
+        public Action<int, bool> Trigger;
+        
         public static bool WorldReset { get; protected set; }
         public static float WorldResetHeight { get; protected set; }
 
@@ -14,9 +18,15 @@ namespace Graphene.VRUtils
 
         public XrDevicePosition Head;
 
+        [HideInInspector]
         public HandBehaviour[] Hands;
 
         public Transform HeadHolder;
         public Transform InitialPosition;
+
+        protected virtual void Awake()
+        {
+            Hands = FindObjectsOfType<HandBehaviour>();
+        }
     }
 }
