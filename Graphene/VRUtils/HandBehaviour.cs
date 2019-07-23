@@ -30,6 +30,10 @@ namespace Graphene.VRUtils
         private XRNode _xrNode;
         private InputDevice _device;
 
+        public LayerMask HittableLayer;
+
+        private bool _grabbing;
+
         private void Awake()
         {
             _collider = GetComponent<Collider>();
@@ -55,6 +59,8 @@ namespace Graphene.VRUtils
         public void Grab(int index, bool grab)
         {
             if ((int) _index != index) return;
+
+            _grabbing = grab;
 
             GrabFeedback(grab);
             if (_interactible != null)
@@ -104,10 +110,10 @@ namespace Graphene.VRUtils
 
         public void Vibrate()
         {
-            if(isFoot) return;
-            
+            if (isFoot) return;
+
             _device = InputDevices.GetDeviceAtXRNode(_xrNode);
-            
+
             if (_device.isValid)
             {
                 HapticCapabilities hapcap = new HapticCapabilities();
@@ -124,7 +130,28 @@ namespace Graphene.VRUtils
         {
             _movementVelocity = _lastPosition - transform.position;
             _lastPosition = transform.position;
+
+            if (!_grabbing) return;
+
+            var hits = Physics.OverlapSphere(transform.position, Mathf.Max(_collider.bounds.size.x, _collider.bounds.size.z), HittableLayer);
+            if (hits.Length == 0) return;
+
+            var pos = transform.position;
+
+            foreach (var hit in hits)
+            {
+                if (_interactible != null && hit.gameObject == _interactible.gameObject) continue;
+
+                var rb = hit.GetComponent<Rigidbody>();
+
+                if (rb == null) continue;
+
+                rb.isKinematic = false;
+                rb.useGravity = true;
+                rb.AddForce((hit.transform.position - transform.position).normalized * 800);
+            }
         }
+
 
         private void OnCollisionExit(Collision other)
         {
@@ -138,7 +165,7 @@ namespace Graphene.VRUtils
         private bool FitGrabbed()
         {
             Vibrate();
-            
+
             if (_interactible.OnGrab(transform))
             {
                 HideController();
@@ -164,10 +191,11 @@ namespace Graphene.VRUtils
             //_collider.enabled = false;
         }
 
+
         private void Release()
         {
             Vibrate();
-            
+
             if (_interactible.Release())
             {
                 ShowController();

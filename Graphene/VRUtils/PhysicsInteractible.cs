@@ -8,7 +8,7 @@ namespace Graphene.VRUtils
     [RequireComponent(typeof(Rigidbody))]
     public class PhysicsInteractible : HandInteractible
     {
-        private float _throwForce = 36;
+        private float _throwForce = 64;
 
         public bool CanWorldReset = true;
 
@@ -19,7 +19,6 @@ namespace Graphene.VRUtils
 
         private Vector3 _lastPos;
 
-        private float _lastDelta;
         protected float _lastResetTime;
         protected TransitionOutlineMaterialManager _outline;
         protected Collider _collider;
@@ -41,10 +40,21 @@ namespace Graphene.VRUtils
                 _outline.HideOutline();
 
             _rigidbody.isKinematic = true;
+            _collider.enabled = false;
 
             _lastPos = transform.position;
 
             return base.OnGrab(parent);
+        }
+
+        protected void SetRigidbodyDynamic()
+        {
+            _rigidbody.isKinematic = false;
+            _rigidbody.useGravity = true;
+            
+            _collider.enabled = true;
+            
+            transform.parent = _parent;
         }
 
         protected override void HandClose()
@@ -72,7 +82,7 @@ namespace Graphene.VRUtils
             if (_outline)
                 _outline.HideOutline();
             
-            _rigidbody.isKinematic = false;
+            SetRigidbodyDynamic();
             _rigidbody.velocity = _velocity * _throwForce;
             _rigidbody.angularVelocity = _angularVelocity * 0.10f;
 
@@ -92,12 +102,6 @@ namespace Graphene.VRUtils
 
                 return;
             }
-
-            var delta = Time.deltaTime;
-
-            //_velocity = (transform.position - _lastPos) * _lastDelta;
-
-            _lastDelta = delta;
         }
 
         protected virtual void FixedUpdate()
@@ -113,7 +117,9 @@ namespace Graphene.VRUtils
             var pos = t.position;
             var rot = t.eulerAngles;
             
-            _velocity = (pos - _lastPos);
+            var newV = (pos - _lastPos);
+
+            _velocity += (newV - _velocity) * Time.deltaTime * 4.6f;
             _angularVelocity = (rot - _lastRot);
             
             _lastPos = pos;
