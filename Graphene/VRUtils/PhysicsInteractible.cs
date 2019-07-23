@@ -44,6 +44,8 @@ namespace Graphene.VRUtils
 
             _lastPos = transform.position;
 
+            AnalyticsSaver.SaveData("on_interact", gameObject.name, "on_grab");
+            
             return base.OnGrab(parent);
         }
 
@@ -75,6 +77,8 @@ namespace Graphene.VRUtils
             _rigidbody.isKinematic = false;
             _rigidbody.velocity = _velocity * Force;
 
+            AnalyticsSaver.SaveData("on_interact", gameObject.name, "on_release");
+            
             return base.Release();
         }
 

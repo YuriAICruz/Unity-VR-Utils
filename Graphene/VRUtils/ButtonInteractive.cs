@@ -76,6 +76,9 @@ namespace Graphene.VRUtils
             ChangeInteractible(false);
             _clickAnimation = StartCoroutine(AnimateClick());
             
+            
+            AnalyticsSaver.SaveData("on_interact", gameObject.name, "on_click");
+            
             _outline.HideOutline();
         }
 
