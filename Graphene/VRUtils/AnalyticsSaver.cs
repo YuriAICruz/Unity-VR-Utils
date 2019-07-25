@@ -5,6 +5,7 @@ using System.Linq;
 using Newtonsoft.Json;
 using UnityEngine;
 using VrSafety;
+using UnityEngine.Analytics;
 
 namespace Graphene.VRUtils
 {
@@ -83,6 +84,7 @@ namespace Graphene.VRUtils
 
             _iniTime = Time.realtimeSinceStartup;
 
+            Analytics.SetUserId(key);
             //Firebase.Analytics.FirebaseAnalytics.LogEvent(Firebase.Analytics.FirebaseAnalytics.EventLogin, key, name);
         }
 
@@ -93,6 +95,10 @@ namespace Graphene.VRUtils
             if (_sessions != null && _sessions.Count > 0)
                 _sessions.Last().AddData(new Analytic(key, action, value, t));
 
+            AnalyticsEvent.Custom(key, new Dictionary<string, object>()
+            {
+                {action+ "_" + value, t}
+            });
             //Firebase.Analytics.FirebaseAnalytics.LogEvent("key", action + "_" + value, t);
         }
 
@@ -102,6 +108,11 @@ namespace Graphene.VRUtils
 
             var path = $"{Application.dataPath}/../analytic_data.json";
 
+            Analytics.FlushEvents();
+            
+//            File.WriteAllText(path, JsonConvert.SerializeObject(_sessions));
+//
+//            return;
             if (_saving)
             {
                 File.WriteAllText(path, JsonConvert.SerializeObject(_sessions));
@@ -126,7 +137,6 @@ namespace Graphene.VRUtils
 
                 return;
             }
-
             HttpComm.Post<string>(ApiUrl, AnalyticEndpoint + "/", JsonConvert.SerializeObject(_sessions), response =>
             {
                 Debug.Log(response);
