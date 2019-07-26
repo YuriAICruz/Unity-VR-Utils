@@ -83,7 +83,7 @@ namespace Graphene.VRUtils
             _sessions.Add(new Session(key, name));
 
             _iniTime = Time.realtimeSinceStartup;
-
+            
             Analytics.SetUserId(key);
             //Firebase.Analytics.FirebaseAnalytics.LogEvent(Firebase.Analytics.FirebaseAnalytics.EventLogin, key, name);
         }
