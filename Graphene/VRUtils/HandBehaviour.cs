@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.XR;
+using Random = UnityEngine.Random;
 
 namespace Graphene.VRUtils
 {
@@ -103,15 +105,33 @@ namespace Graphene.VRUtils
 
             var phyin = other.transform.GetComponent<PhysicsInteractible>();
 
-            if (phyin == null) return;
+            if (phyin == null)
+            {
+                Vibrate(1, 0.06f);
+                return;
+            }
+
             phyin._rigidbody.isKinematic = false;
             phyin._rigidbody.AddForce(-_movementVelocity * 2000);
+
+            Vibrate(2, 0.12f);
         }
 
-        public void Vibrate()
+        public void Vibrate(float intensity, float duration = 0)
         {
             if (isFoot) return;
 
+            if (duration > 0)
+            {
+                StartCoroutine(Vibration(intensity, duration));
+                return;
+            }
+
+            Vibration(intensity);
+        }
+
+        private void Vibration(float intensity)
+        {
             _device = InputDevices.GetDeviceAtXRNode(_xrNode);
 
             if (_device.isValid)
@@ -121,8 +141,21 @@ namespace Graphene.VRUtils
 
                 if (hapcap.supportsImpulse)
                 {
-                    _device.SendHapticImpulse(0, 0.5f);
+                    _device.SendHapticImpulse(0, intensity);
                 }
+            }
+        }
+
+        IEnumerator Vibration(float intensity, float duration)
+        {
+            var t = 0f;
+            while (t < duration)
+            {
+                t += Time.deltaTime;
+
+                Vibration(intensity);
+
+                yield return null;
             }
         }
 
@@ -138,17 +171,30 @@ namespace Graphene.VRUtils
 
             var pos = transform.position;
 
+            var vibrated = false;
             foreach (var hit in hits)
             {
                 if (_interactible != null && hit.gameObject == _interactible.gameObject) continue;
 
                 var rb = hit.GetComponent<Rigidbody>();
 
-                if (rb == null) continue;
+                if (!rb)
+                {
+                    if (!vibrated)
+                        Vibrate(1, 0.06f);
+                    vibrated = true;
+                    continue;
+                }
 
                 rb.isKinematic = false;
                 rb.useGravity = true;
                 rb.AddForce((hit.transform.position - transform.position).normalized * 800);
+                rb.angularVelocity += Random.insideUnitSphere * 40;
+
+                if (!vibrated)
+                    Vibrate(2, 0.12f);
+                
+                vibrated = true;
             }
         }
 
@@ -164,7 +210,7 @@ namespace Graphene.VRUtils
 
         private bool FitGrabbed()
         {
-            Vibrate();
+            Vibrate(1f, 0.12f);
 
             if (_interactible.OnGrab(transform))
             {
@@ -194,7 +240,7 @@ namespace Graphene.VRUtils
 
         private void Release()
         {
-            Vibrate();
+            Vibrate(0.5f, 0.08f);
 
             if (_interactible.Release())
             {
