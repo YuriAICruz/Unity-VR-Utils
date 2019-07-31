@@ -7,6 +7,7 @@ namespace Graphene.VRUtils
     {
         public Action<int, bool> Grab;
         public Action<int, bool> Trigger;
+        public Action MapHardwareTrackers;
         
         public static bool WorldReset { get; protected set; }
         public static float WorldResetHeight { get; protected set; }
