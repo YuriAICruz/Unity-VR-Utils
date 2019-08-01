@@ -101,20 +101,20 @@ namespace Graphene.VRUtils
 
         private void OnCollisionEnter(Collision other)
         {
-            if (!isFoot) return;
-
-            var phyin = other.transform.GetComponent<PhysicsInteractible>();
-
-            if (phyin == null)
-            {
-                Vibrate(1, 0.06f);
-                return;
-            }
-
-            phyin._rigidbody.isKinematic = false;
-            phyin._rigidbody.AddForce(-_movementVelocity * 2000);
-
-            Vibrate(2, 0.12f);
+//            if (!isFoot) return;
+//
+//            var phyin = other.transform.GetComponent<PhysicsInteractible>();
+//
+//            if (phyin == null)
+//            {
+//                Vibrate(1, 0.06f);
+//                return;
+//            }
+//
+//            phyin._rigidbody.isKinematic = false;
+//            phyin._rigidbody.AddForce(-_movementVelocity * 2000);
+//
+//            Vibrate(2, 0.12f);
         }
 
         public void Vibrate(float intensity, float duration = 0)
@@ -164,7 +164,7 @@ namespace Graphene.VRUtils
             _movementVelocity = _lastPosition - transform.position;
             _lastPosition = transform.position;
 
-            if (!_grabbing) return;
+            if (!_grabbing && !isFoot) return;
 
             var hits = Physics.OverlapSphere(transform.position, Mathf.Max(_collider.bounds.size.x, _collider.bounds.size.z), HittableLayer);
             if (hits.Length == 0) return;
