@@ -103,7 +103,7 @@ namespace VrSafety
             var newStream = request.GetRequestStream();
             newStream.Write(bytes, 0, bytes.Length);
             newStream.Close();
-            
+
             return;
 
             using (var streamWriter = new StreamWriter(request.GetRequestStream()))
@@ -142,12 +142,16 @@ namespace VrSafety
                 }
                 catch (WebException e)
                 {
-                    if(e.Response == null)
+                    if (e.Response == null)
+                    {
                         callback?.Invoke(new Response<T>(false, 400, "", default(T), e.ToString()));
-                    
-                    var code = (int) ((HttpWebResponse) e.Response).StatusCode;
-                    
-                    callback?.Invoke(new Response<T>(false, code, "", default(T), e.ToString()));
+                    }
+                    else
+                    {
+                        var code = (int) ((HttpWebResponse) e.Response).StatusCode;
+
+                        callback?.Invoke(new Response<T>(false, code, "", default(T), e.ToString()));
+                    }
                 }
                 catch (Exception e)
                 {
@@ -174,7 +178,7 @@ namespace VrSafety
             //req.KeepAlive = false;
 
             req.Headers = new WebHeaderCollection();
-            
+
             req.ContentType = "application/json";
 
             //req.Headers.Add("Content-Type", "application/json");

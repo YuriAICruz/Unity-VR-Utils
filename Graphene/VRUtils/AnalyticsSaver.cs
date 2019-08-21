@@ -85,7 +85,6 @@ namespace Graphene.VRUtils
             _iniTime = Time.realtimeSinceStartup;
             
             Analytics.SetUserId(key);
-            //Firebase.Analytics.FirebaseAnalytics.LogEvent(Firebase.Analytics.FirebaseAnalytics.EventLogin, key, name);
         }
 
         public static void SaveData(string key, string action, string value)
@@ -99,7 +98,7 @@ namespace Graphene.VRUtils
             {
                 {action+ "_" + value, t}
             });
-            //Firebase.Analytics.FirebaseAnalytics.LogEvent("key", action + "_" + value, t);
+            
         }
 
         public static void SaveToDisk()
@@ -110,9 +109,6 @@ namespace Graphene.VRUtils
 
             Analytics.FlushEvents();
             
-//            File.WriteAllText(path, JsonConvert.SerializeObject(_sessions));
-//
-//            return;
             if (_saving)
             {
                 File.WriteAllText(path, JsonConvert.SerializeObject(_sessions));
@@ -145,16 +141,7 @@ namespace Graphene.VRUtils
                 {
                     Debug.LogError($"Error saving:\n{response.code}\n{response.error}");
 
-//                    _saveCounter++;
-//                    if (_saveCounter >= 5)
-//                    {
-//                        File.WriteAllText(path, JsonConvert.SerializeObject(_sessions));
-//                        return;
-//                    }
-
                     File.WriteAllText(path, JsonConvert.SerializeObject(_sessions));
-                    return;
-                    //SaveToDisk();
                 }
                 else
                 {
