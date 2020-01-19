@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
+using Graphene.VRUtils.Oculus;
 using UnityEngine;
 using UnityEngine.XR;
 
@@ -27,9 +25,24 @@ namespace Graphene.VRUtils
         [SerializeField] private int _index;
 
         private BaseManager _manager;
+        
+#if OCULUS_QUEST
+        [Header("Oculus Quest")]
+        public bool isFinger;
+        //public OVRPlugin.HandFinger finger;
+        public OVRPlugin.BoneId bone;
+        
+        private OVRPlugin.HandState _currentHandState;
+
+        public HandTracker handReference;
+#endif
 
         private void Start()
         {
+#if OCULUS_QUEST
+            _currentHandState = new OVRPlugin.HandState();
+#endif
+
             InputTracking.nodeAdded += NodeAdd;
             InputTracking.nodeRemoved += NodeRemove;
 
@@ -137,7 +150,8 @@ namespace Graphene.VRUtils
 
         private void Update()
         {
-            if (!_tracking || Point == XRNode.GameController || Point == XRNode.TrackingReference) return; // || Point == XRNode.HardwareTracker
+            if (!_tracking || Point == XRNode.GameController || Point == XRNode.TrackingReference || (isFinger && (!handReference || !handReference.IsTracked)))
+                return; // || Point == XRNode.HardwareTracker
 
             InputTracking.GetNodeStates(_nodes);
 
@@ -145,6 +159,15 @@ namespace Graphene.VRUtils
             foreach (var node in _nodes)
             {
                 if (node.nodeType != Point) continue;
+
+#if OCULUS_QUEST
+                if (isFinger && (node.nodeType == XRNode.RightHand || node.nodeType == XRNode.LeftHand))
+                {
+                    UpdateHandPose();
+                    return;
+                }
+#endif
+
 
 //                if (Point == XRNode.HardwareTracker)
 //                    Debug.Log(gameObject);
@@ -168,5 +191,15 @@ namespace Graphene.VRUtils
                 }
             }
         }
+
+#if OCULUS_QUEST
+        private void UpdateHandPose()
+        {
+            var point = handReference.Bones[(int)bone];
+            
+            transform.position = point.position;
+            transform.rotation = point.rotation;
+        }
+#endif
     }
 }
