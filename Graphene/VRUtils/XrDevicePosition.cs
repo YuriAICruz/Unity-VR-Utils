@@ -168,10 +168,6 @@ namespace Graphene.VRUtils
                 }
 #endif
 
-
-//                if (Point == XRNode.HardwareTracker)
-//                    Debug.Log(gameObject);
-
                 if (_index != index)
                 {
                     index++;
