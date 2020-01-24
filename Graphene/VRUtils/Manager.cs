@@ -44,12 +44,12 @@ namespace Graphene.VRUtils
                 HeadHolder.position = new Vector3(InitialPosition.position.x, HeadHolder.position.y, InitialPosition.position.z);
         }
 
-        protected void OnTriggerHit(int i, bool trigger)
+        protected virtual void OnTriggerHit(int i, bool trigger)
         {
             Grab?.Invoke(i, trigger);
         }
 
-        protected void OnGrabHit(int i, bool grab)
+        protected virtual void OnGrabHit(int i, bool grab)
         {
             Grab?.Invoke(i, grab);
             
