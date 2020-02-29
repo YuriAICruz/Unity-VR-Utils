@@ -15,11 +15,15 @@ namespace Graphene.VRUtils
         
         public event Action<bool> GrabL, GrabR;
         public event Action<bool> TriggerL, TriggerR;
+        
+        public event Action Any;
 
         protected override void ExecuteCombo(int id)
         {
             if (debug)
                 Debug.Log(id);
+            
+            Any?.Invoke();
             
             switch (id)
             {

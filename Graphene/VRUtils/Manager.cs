@@ -32,7 +32,9 @@ namespace Graphene.VRUtils
 
         protected void Reset()
         {
+#if DEV_MODE
             Debug.Log("Reset");
+#endif
 
             if (transform.parent == null) return;
             
