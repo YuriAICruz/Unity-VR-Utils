@@ -150,11 +150,16 @@ namespace Graphene.VRUtils
 
         private void Update()
         {
+#if OCULUS_QUEST
             if (!_tracking || Point == XRNode.GameController || Point == XRNode.TrackingReference || (isFinger && (!handReference || !handReference.IsTracked)))
+                return; 
+#else
+            if (!_tracking|| Point == XRNode.GameController || Point == XRNode.TrackingReference) 
                 return; // || Point == XRNode.HardwareTracker
+#endif
 
             InputTracking.GetNodeStates(_nodes);
-
+            
             var index = 0;
             foreach (var node in _nodes)
             {
