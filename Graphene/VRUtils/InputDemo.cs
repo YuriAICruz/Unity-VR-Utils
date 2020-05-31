@@ -12,19 +12,20 @@ namespace Graphene.VRUtils
         public bool GrabRState;
         public bool TriggerLState;
         public bool TriggerRState;
-        
+
         public event Action<bool> GrabL, GrabR;
         public event Action<bool> TriggerL, TriggerR;
-        
+
         public event Action Any;
 
         protected override void ExecuteCombo(int id)
         {
             if (debug)
                 Debug.Log(id);
-            
-            Any?.Invoke();
-            
+
+            if (id % 2 == 0)
+                Any?.Invoke();
+
             switch (id)
             {
                 case 0:
